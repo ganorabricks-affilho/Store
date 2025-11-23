@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ganorabricks — PAB service</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div id="navbar"></div>
+
+<!-- HERO / INTRO -->
+<section>
+    <h1 class="section-title">Pick-a-Brick Wall and Build-a-Minifig service</h1>
+    <p>Need specific LEGO® pieces but can’t get to the store?<strong> I’ll shop for you!</strong></p>
+    <br>
+    <p>Using the LEGO Pick-a-Brick Wall and Build-A-Minifigure (BAM) station, I hand-select the bricks, elements, and minifig parts you want. I purchase everything in-store and ship it directly to you.</p>
+    <p>Perfect for MOC builders, collectors, or anyone who needs a curated selection of bricks without the hassle of visiting the store.</p>
+    <br>
+    <h3>Pricing:</h3>
+    <p style="margin-bottom: 18px;">
+        Store price + tax + shipping + <strong>15% service fee</strong> (applied to the order total - includes Paypal G&S fees). Payments only via Paypal Goods and Services.
+    </p>
+</section>
+
+<!-- GALLERY -->
+<section>
+    <h2 class="section-title">Available Parts & Minifigs</h2>
+    <h3>Store: Concord Mills, NC</h3>
+    <p>Current store prices: $17.99 Large box, $9.99 Small box, $9.99 3 Minifigs set. Sales Tax: 7%</p>
+    <p>Please check the photos below for current inventory. Parts may not be available depending on when the inventory was taken</p>
+    <br>
+    <div class="gallery-grid">
+        <div>
+            <img src="/assets/pab-inventory.jpg" alt="Pick-a-Brick Wall" class="zoomable" style="width:100%; border-radius:12px; cursor: zoom-in;">
+            <p>Pick-a-Brick Wall</p>
+        </div>
+        <div>
+            <img src="/assets/pab-inventory01.jpg" alt="Build-a-Minifig Station" class="zoomable" style="width:100%; border-radius:12px; cursor: zoom-in;">
+            <p>Minifigs Selection</p>
+        </div>
+        <div>
+            <img src="/assets/pab-inventory02.jpg" alt="Minifigs Selection" class="zoomable" style="width:100%; border-radius:12px; cursor: zoom-in;">
+            <p>Minifigs Selection</p>
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT BOX -->
+<section>
+    <div class="contact-box">
+        <h2>Contact Me</h2>
+        <p>Reach out for a quote and confirm availability</p>
+        <p><strong>Email:</strong> <a href="mailto:ganorabricks@icloud.com?subject=Pick-a-Brick%20Service%20Inquiry">ganorabricks@icloud.com</a></p>
+        <p>I usually respond within 24 hours.</p>
+    </div>
+</section>
+
+<footer>
+    <p>© 2025 Ganorabricks</p>
+</footer>
+
+<style>
+.modal-zoom {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.85);
+    justify-content: center;
+    align-items: center;
+}
+.modal-zoom.active {
+    display: flex;
+}
+.modal-zoom img {
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 16px;
+    box-shadow: 0 0 32px #0008;
+}
+.modal-zoom .close-btn {
+    position: absolute;
+    top: 32px;
+    right: 48px;
+    font-size: 2.5rem;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    background: none;
+    border: none;
+}
+</style>
+
+<div class="modal-zoom" id="modalZoom">
+    <button class="close-btn" id="closeZoom" title="Close">&times;</button>
+    <img id="modalZoomImg" src="" alt="Zoomed image">
+</div>
+
+<script src="script.js"></script>
+<script>
+fetch('navbar.html')
+        .then(res => res.text())
+        .then(html => {
+                document.getElementById('navbar').innerHTML = html;
+                // Re-observe sections for fade-in animation after navbar loads
+                if (window.IntersectionObserver) {
+                        document.querySelectorAll('section').forEach(section => {
+                                section.classList.remove('section-visible');
+                        });
+                        const observerOptions = { threshold: 0.1 };
+                        const sectionObserver = new IntersectionObserver((entries, observer) => {
+                                entries.forEach(entry => {
+                                        if(entry.isIntersecting){
+                                                entry.target.classList.add('section-visible');
+                                        }
+                                });
+                        }, observerOptions);
+                        document.querySelectorAll('section').forEach(section => {
+                                sectionObserver.observe(section);
+                        });
+                }
+        });
+
+// Modal zoom logic
+document.querySelectorAll('.zoomable').forEach(img => {
+    img.addEventListener('click', function() {
+        document.getElementById('modalZoomImg').src = this.src;
+        document.getElementById('modalZoom').classList.add('active');
+    });
+});
+document.getElementById('closeZoom').addEventListener('click', function() {
+    document.getElementById('modalZoom').classList.remove('active');
+    document.getElementById('modalZoomImg').src = '';
+});
+document.getElementById('modalZoom').addEventListener('click', function(e) {
+    if (e.target === this) {
+        this.classList.remove('active');
+        document.getElementById('modalZoomImg').src = '';
+    }
+});
+</script>
+</body>
+</html>

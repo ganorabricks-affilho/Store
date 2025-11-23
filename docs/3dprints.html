@@ -8,25 +8,7 @@
 <body>
 
 <!-- NAVBAR -->
-<nav>
-    <div class="logo-container">
-        <img src="assets/logo-placeholder.png" alt="Ganorabricks Logo">
-        <span>Ganorabricks</span>
-    </div>
-
-    <ul>
-        <li><a class="btn-brick" href="index.html">Home</a></li>
-        <li><a class="btn-brick" href="lego-parts.html">LEGO® Parts</a></li>
-        <li><a class="btn-brick" href="3dprints.html">3D Prints</a></li>
-        <li><a class="btn-brick" href="custom-orders.html">Custom Orders</a></li>
-    </ul>
-
-    <div class="hamburger">
-        <div></div>
-        <div></div>
-        <div></div>
-    </div>
-</nav>
+<div id="navbar"></div>
 
 <!-- HERO / INTRO -->
 <section>
@@ -64,5 +46,29 @@
 </footer>
 
 <script src="script.js"></script>
+<script>
+fetch('navbar.html')
+    .then(res => res.text())
+    .then(html => {
+        document.getElementById('navbar').innerHTML = html;
+        // Re-observe sections for fade-in animation after navbar loads
+        if (window.IntersectionObserver) {
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.remove('section-visible');
+            });
+            const observerOptions = { threshold: 0.1 };
+            const sectionObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting){
+                        entry.target.classList.add('section-visible');
+                    }
+                });
+            }, observerOptions);
+            document.querySelectorAll('section').forEach(section => {
+                sectionObserver.observe(section);
+            });
+        }
+    });
+</script>
 </body>
 </html>

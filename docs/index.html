@@ -8,25 +8,7 @@
 <body>
 
 <!-- NAVBAR -->
-<nav>
-    <div class="logo-container">
-        <img src="assets/logo.png" alt="Ganorabricks Logo">
-        <span>Ganorabricks</span>
-    </div>
-
-    <ul>
-        <li><a class="btn-brick" href="index.html">Home</a></li>
-        <li><a class="btn-brick" href="lego-parts.html">LEGO® Parts</a></li>
-        <li><a class="btn-brick" href="3dprints.html">3D Prints</a></li>
-        <li><a class="btn-brick" href="custom-orders.html">Custom Orders</a></li>
-    </ul>
-
-    <div class="hamburger">
-        <div></div>
-        <div></div>
-        <div></div>
-    </div>
-</nav>
+<div id="navbar"></div>
 
 <!-- HERO SECTION -->
 <header class="hero">
@@ -34,10 +16,12 @@
         <h1>Premium LEGO® Parts & Custom 3D Prints</h1>
         <p>Shop high-quality LEGO® parts on BrickLink & BrickOwl, and explore unique 3D-printed stands, organizers, and display solutions.</p>
 
-        <div class="hero-buttons">
-            <a class="btn-stud" href="#" target="_blank">BrickLink Store</a>
-            <a class="btn-stud" href="#" target="_blank">BrickOwl Store</a>
-        </div>
+        <!--
+            <div class="hero-buttons">
+                <a class="btn-brick" href="#" target="_blank">BrickLink Store</a>
+                <a class="btn-brick" href="#" target="_blank">BrickOwl Store</a>
+            </div>
+        -->
     </div>
 
     <img src="assets/hero.jpg" alt="LEGO Display">
@@ -47,37 +31,13 @@
 <section class="offer">
     <h2 class="section-title">What I Offer</h2>
     <ul>
-        <li><strong>Authentic LEGO® Parts</strong> — sorted & high-quality.</li>
-        <li><strong>Thousands of inventory items</strong> available across BrickLink & BrickOwl.</li>
+        <li><strong>Thousands of authentic LEGO® Parts and sets</strong> available across BrickLink & BrickOwl.</li>
         <li><strong>3D-Printed stands & organizers</strong> for collectors and display builders.</li>
         <li><strong>Custom 3D print requests</strong> welcome.</li>
+        <li><strong>Pick a Brick Wall service</strong> - for those that don't have a LEGO® store close by .</li>
     </ul>
 </section>
 
-<!-- CATEGORIES -->
-<section>
-    <h2 class="section-title">Explore</h2>
-
-    <div class="category-grid">
-        <div class="card">
-            <h3>LEGO® Parts</h3>
-            <p>Clean, inspected, and sorted pieces for builders and collectors.</p>
-            <a class="btn-brick small" href="lego-parts.html">View Parts</a>
-        </div>
-
-        <div class="card">
-            <h3>3D Printed Accessories</h3>
-            <p>Stands, risers, organizers, mounts, and more.</p>
-            <a class="btn-stud small" href="3dprints.html">Browse Prints</a>
-        </div>
-
-        <div class="card">
-            <h3>Custom Orders</h3>
-            <p>Need a unique holder, stand, or organizer? I can design and print it.</p>
-            <a class="btn-brick small" href="custom-orders.html">Custom Work</a>
-        </div>
-    </div>
-</section>
 
 <!-- FOOTER -->
 <footer>
@@ -86,5 +46,29 @@
 </footer>
 
 <script src="script.js"></script>
+<script>
+fetch('navbar.html')
+    .then(res => res.text())
+    .then(html => {
+        document.getElementById('navbar').innerHTML = html;
+        // Re-observe sections for fade-in animation after navbar loads
+        if (window.IntersectionObserver) {
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.remove('section-visible');
+            });
+            const observerOptions = { threshold: 0.1 };
+            const sectionObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting){
+                        entry.target.classList.add('section-visible');
+                    }
+                });
+            }, observerOptions);
+            document.querySelectorAll('section').forEach(section => {
+                sectionObserver.observe(section);
+            });
+        }
+    });
+</script>
 </body>
 </html>
