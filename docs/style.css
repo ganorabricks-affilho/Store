@@ -9,7 +9,7 @@
 }
 
 body {
-    background: #ECECEC url('assets/stud-bg.png') repeat;
+    background: #ECECEC;
     color: #222;
     line-height: 1.6;
     padding-top: 88px;
@@ -102,11 +102,11 @@ nav ul li a.btn-stud:hover {
 .hero {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     padding: 60px 8%;
     background: white;
-    border-bottom: 6px solid var(--orange);
     flex-wrap: wrap;
+    min-height: calc(100vh - 88px - 80px);
 }
 
 .hero img {
@@ -157,8 +157,8 @@ nav ul li a.btn-stud,
 nav ul li a.btn-stud:hover,
 .btn-stud:hover {
     transform: translateY(-3px) !important;
-    box-shadow: 0 8px 0 var(--blue-dark) !important;
-    background: var(--blue) !important;
+    background: var(--blue-dark) !important;
+    box-shadow: 0 8px 0 #004D75 !important;
 }
 
 /* Rectangular brick-style buttons (for nav / secondary) */
@@ -272,7 +272,15 @@ footer {
     color: #eee;
     text-align: center;
     padding: 20px;
-    margin-top: 40px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+}
+
+body {
+    padding-bottom: 80px; /* Space for fixed footer */
 }
 
 /* ------------------------------
