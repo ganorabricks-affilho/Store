@@ -1,19 +1,23 @@
 // ------------------------------
 // HAMBURGER MENU TOGGLE
 // ------------------------------
-const hamburger = document.querySelector(".hamburger");
-const nav = document.querySelector("nav");
+function initHamburgerMenu() {
+    const hamburger = document.querySelector(".hamburger");
+    const nav = document.querySelector("nav");
 
-hamburger.addEventListener("click", () => {
-    nav.classList.toggle("active");
-});
+    if (hamburger && nav) {
+        hamburger.addEventListener("click", () => {
+            nav.classList.toggle("active");
+        });
 
-// Close menu when clicking a link (mobile)
-document.querySelectorAll("nav ul li a").forEach(link => {
-    link.addEventListener("click", () => {
-        nav.classList.remove("active");
-    });
-});
+        // Close menu when clicking a link (mobile)
+        document.querySelectorAll("nav ul li a").forEach(link => {
+            link.addEventListener("click", () => {
+                nav.classList.remove("active");
+            });
+        });
+    }
+}
 
 // ------------------------------
 // CARD FLOATING ANIMATION ON HOVER

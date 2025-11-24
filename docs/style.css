@@ -88,12 +88,20 @@ nav ul li a.btn-stud:hover {
     flex-direction: column;
     cursor: pointer;
     gap: 5px;
+    z-index: 1000;
 }
 
 .hamburger div {
     width: 25px;
     height: 3px;
     background: white;
+    transition: 0.3s;
+}
+
+@media(max-width: 830px) {
+    .hamburger {
+        display: flex;
+    }
 }
 
 /* ------------------------------
