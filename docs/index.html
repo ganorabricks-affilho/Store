@@ -42,6 +42,8 @@ fetch('navbar.html')
     .then(res => res.text())
     .then(html => {
         document.getElementById('navbar').innerHTML = html;
+        // Initialize hamburger menu
+        initHamburgerMenu();
         // Re-observe sections for fade-in animation after navbar loads
         if (window.IntersectionObserver) {
             document.querySelectorAll('section').forEach(section => {
