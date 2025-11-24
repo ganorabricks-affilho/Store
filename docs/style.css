@@ -12,6 +12,7 @@ body {
     background: #ECECEC url('assets/stud-bg.png') repeat;
     color: #222;
     line-height: 1.6;
+    padding-top: 88px;
 }
 
 a {
@@ -41,9 +42,12 @@ nav {
     justify-content: space-between;
     align-items: center;
     color: white;
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 999;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 nav .logo-container {
