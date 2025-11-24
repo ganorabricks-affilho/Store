@@ -27,9 +27,7 @@
     </div>
 </section>
 
-<footer>
-    <p>© 2025 Ganorabricks</p>
-</footer>
+<div id="footer"></div>
 
 <script src="script.js"></script>
 <script>
@@ -54,6 +52,9 @@ fetch('navbar.html')
                 sectionObserver.observe(section);
             });
         }
+        fetch('footer.html')
+            .then(res => res.text())
+            .then(html => document.getElementById('footer').innerHTML = html);
     });
 </script>
 </body>

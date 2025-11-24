@@ -16,17 +16,8 @@
     <div class="hero-text">
         <h1>Premium LEGO® Parts & Custom 3D Prints</h1>
         <p>Shop high-quality LEGO® parts on BrickLink & BrickOwl, and explore unique 3D-printed stands, organizers, and display solutions.</p>
-
-        <!--
-            <div class="hero-buttons">
-                <a class="btn-brick" href="#" target="_blank">BrickLink Store</a>
-                <a class="btn-brick" href="#" target="_blank">BrickOwl Store</a>
-            </div>
-        -->
     </div>
 
-    <img src="assets/hero.jpg" alt="LEGO Display">
-</header>
 
 <!-- WHAT I OFFER -->
 <section class="offer">
@@ -39,12 +30,11 @@
     </ul>
 </section>
 
+</header>
+
 
 <!-- FOOTER -->
-<footer>
-    <p>© 2025 Ganorabricks — All Rights Reserved</p>
-    <p>LEGO® is a trademark of the LEGO Group, which does not sponsor or endorse this site.</p>
-</footer>
+<div id="footer"></div>
 
 <script src="script.js"></script>
 <script>
@@ -69,6 +59,10 @@ fetch('navbar.html')
                 sectionObserver.observe(section);
             });
         }
+        // load footer after navbar
+        fetch('footer.html')
+            .then(res => res.text())
+            .then(html => document.getElementById('footer').innerHTML = html);
     });
 </script>
 </body>

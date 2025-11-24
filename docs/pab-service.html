@@ -35,15 +35,15 @@
     <br>
     <div class="gallery-grid">
         <div>
-            <img src="assets/pab-inventory.jpg" alt="Pick-a-Brick Wall" class="zoomable" style="width:100%; border-radius:12px; cursor: zoom-in;">
+            <img src="assets/pab/pab-inventory.jpg" alt="Pick-a-Brick Wall" class="zoomable" style="width:100%; border-radius:12px; cursor: zoom-in;">
             <p>Pick-a-Brick Wall</p>
         </div>
         <div>
-            <img src="assets/pab-inventory01.jpg" alt="Build-a-Minifig Station" class="zoomable" style="width:100%; border-radius:12px; cursor: zoom-in;">
+            <img src="assets/pab/pab-inventory01.jpg" alt="Build-a-Minifig Station" class="zoomable" style="width:100%; border-radius:12px; cursor: zoom-in;">
             <p>Minifigs Selection</p>
         </div>
         <div>
-            <img src="assets/pab-inventory02.jpg" alt="Minifigs Selection" class="zoomable" style="width:100%; border-radius:12px; cursor: zoom-in;">
+            <img src="assets/pab/pab-inventory02.jpg" alt="Minifigs Selection" class="zoomable" style="width:100%; border-radius:12px; cursor: zoom-in;">
             <p>Minifigs Selection</p>
         </div>
     </div>
@@ -59,9 +59,7 @@
     </div>
 </section>
 
-<footer>
-    <p>© 2025 Ganorabricks</p>
-</footer>
+<div id="footer"></div>
 
 <style>
 .modal-zoom {
@@ -126,7 +124,11 @@ fetch('navbar.html')
                                 sectionObserver.observe(section);
                         });
                 }
-        });
+            // load footer after navbar
+            fetch('footer.html')
+                .then(res => res.text())
+                .then(html => document.getElementById('footer').innerHTML = html);
+            });
 
 // Modal zoom logic
 document.querySelectorAll('.zoomable').forEach(img => {

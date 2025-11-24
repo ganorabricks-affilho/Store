@@ -23,7 +23,7 @@
     <div class="category-grid">
         <div class="card" style="display: flex; align-items: center; justify-content: space-between; gap: 18px;">
             <div style="display: flex; align-items: center; gap: 16px;">
-                <img src="assets/bricklink-logo.svg" style="width:140px;">
+                <img src="assets/parts/bricklink-logo.svg" style="width:140px;">
                 <div>
                     <p>Visit my full BrickLink inventory.</p>
                 </div>
@@ -33,7 +33,7 @@
 
         <div class="card" style="display: flex; align-items: center; justify-content: space-between; gap: 18px;">
             <div style="display: flex; align-items: center; gap: 16px;">
-                <img src="assets/brickowl-logo.png" style="width:140px; background: #1976d2; padding: 12px; border-radius: 8px;">
+                <img src="assets/parts/brickowl-logo.png" style="width:140px; background: #1976d2; padding: 12px; border-radius: 8px;">
                 <div>
                     <p>Browse my BrickOwl store listings.</p>
                 </div>
@@ -47,14 +47,13 @@
 <section>
     <h2 class="section-title">Clean and new sets Inventory</h2>
     <div class="gallery-grid">
-        <img src="assets/inventory.jpg" alt="Inventory">
-        <img src="assets/organizers.jpg" alt="Organizers">
+        <img src="assets/parts/inventory.jpg" alt="Inventory">
+        <img src="assets/parts/organizers.jpg" alt="Organizers">
     </div>
 </section>
 
-<footer>
-    <p>© 2025 Ganorabricks</p>
-</footer>
+<!-- FOOTER -->
+<div id="footer"></div>
 
 <script src="script.js"></script>
 <script>
@@ -79,6 +78,9 @@ fetch('navbar.html')
                 sectionObserver.observe(section);
             });
         }
+        fetch('footer.html')
+            .then(res => res.text())
+            .then(html => document.getElementById('footer').innerHTML = html);
     });
 </script>
 </body>

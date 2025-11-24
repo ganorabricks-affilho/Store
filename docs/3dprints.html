@@ -23,7 +23,7 @@
     <div class="gallery-grid">
         <div class="card" style="display: flex; flex-direction: column; align-items: center; padding: 18px; border-radius: 12px; background: #fff; box-shadow: 0 2px 8px #0002;">
             <a href="stand-details.html" style="width: 100%; text-align: center;">
-                <img src="assets/stands/stand36-front-figs.jpg" alt="Stands" style="width: 120px; height: auto; border-radius: 8px; margin-bottom: 10px;">
+                <img src="assets/3d-prints/stand36-front-figs.jpg" alt="Stands" style="width: 120px; height: auto; border-radius: 8px; margin-bottom: 10px;">
             </a>
             <div style="flex: 1;">
                 <p style="margin: 0 0 8px 0; font-weight: bold;">Minifigure Stands</p>
@@ -60,9 +60,7 @@
     <a class="btn-stud" href="custom-orders.html">Request a Custom Print</a>
 </section>
 
-<footer>
-    <p>© 2025 Ganorabricks</p>
-</footer>
+<div id="footer"></div>
 
 <script src="script.js"></script>
 <script>
@@ -87,6 +85,9 @@ fetch('navbar.html')
                 sectionObserver.observe(section);
             });
         }
+        fetch('footer.html')
+            .then(res => res.text())
+            .then(html => document.getElementById('footer').innerHTML = html);
     });
 </script>
 </body>
