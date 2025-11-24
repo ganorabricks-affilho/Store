@@ -89,19 +89,15 @@ nav ul li a.btn-stud:hover {
     cursor: pointer;
     gap: 5px;
     z-index: 1000;
+    padding: 5px;
 }
 
 .hamburger div {
-    width: 25px;
+    width: 30px;
     height: 3px;
     background: white;
     transition: 0.3s;
-}
-
-@media(max-width: 830px) {
-    .hamburger {
-        display: flex;
-    }
+    border-radius: 2px;
 }
 
 /* ------------------------------
@@ -340,6 +336,7 @@ body {
     
     nav {
         padding: 10px 5%;
+        position: relative;
     }
     
     nav .logo-container img {
@@ -351,8 +348,9 @@ body {
         font-size: 1.1rem;
     }
     
-    nav ul {
-        display: none;
+    /* Hide menu by default on mobile */
+    nav > ul {
+        display: none !important;
         flex-direction: column;
         gap: 12px;
         background: var(--orange);
@@ -363,6 +361,17 @@ body {
         width: 100%;
         padding: 20px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        z-index: 998;
+    }
+    
+    /* Show hamburger on mobile */
+    .hamburger {
+        display: flex !important;
+    }
+    
+    /* Show menu when nav is active */
+    nav.active > ul {
+        display: flex !important;
     }
     
     nav ul li a.btn-stud,
@@ -371,14 +380,6 @@ body {
         max-width: 100% !important;
         margin: 0 !important;
         font-size: 1rem !important;
-    }
-    
-    .hamburger {
-        display: flex;
-    }
-    
-    nav.active ul {
-        display: flex;
     }
     
     .hero {
