@@ -182,7 +182,7 @@ nav ul li a.btn-stud:hover,
    SECTIONS
 --------------------------------*/
 section {
-    padding: 50px 8%;
+    padding: 30px 8%;
 }
 
 .section-title {
@@ -228,8 +228,15 @@ section {
 --------------------------------*/
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    max-width: 100%;
     gap: 25px;
+}
+
+@media (min-width: 1200px) {
+    .gallery-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 .gallery-grid img {

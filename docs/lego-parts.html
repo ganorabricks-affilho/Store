@@ -14,7 +14,7 @@
 <!-- HERO / INTRO -->
 <section>
     <h1 class="section-title">LEGO® Parts</h1>
-    <p>I offer a wide variety of new and used LEGO® parts. Everything is sorted, cleaned, and securely stored.</p>
+    <p>I offer a wide variety of new and used LEGO® parts. Everything is sorted, cleaned, and securely stored. Contact me via email for questions and shipping quotes. <strong>Payments only via Paypal Goods & Services.</strong></p>
 </section>
 
 <!-- STORES -->
@@ -45,11 +45,8 @@
 
 <!-- GALLERY -->
 <section>
-    <h2 class="section-title">Clean and new sets Inventory</h2>
-    <div class="gallery-grid">
-        <img src="assets/parts/inventory.jpg" alt="Inventory">
-        <img src="assets/parts/organizers.jpg" alt="Organizers">
-    </div>
+    <h2 class="section-title">Clean parts and sets Inventory</h2>
+    <div class="gallery-grid" id="inventory-cards"></div>
 </section>
 
 <!-- FOOTER -->
@@ -57,6 +54,73 @@
 
 <script src="script.js"></script>
 <script>
+// Define product cards data
+const inventoryCards = [
+    {
+        setNumber: '5009015',
+        useSetImage: true,
+        title: 'Cerebro',
+        description: 'LEGO set 5009015 - new in box',
+        price: '$65.00',
+        imageWidth: '120px'
+    },
+    {
+        setNumber: '40764',
+        useSetImage: true,
+        title: 'Easter Bunny Surprise',
+        description: 'LEGO set 40764 - new in box (2 available)',
+        price: '$5.00 each',
+        imageWidth: '120px'
+    },
+    {
+        setNumber: '40782',
+        useSetImage: true,
+        title: 'Tropical Rainforest Diorama',
+        description: 'LEGO set 40782 - new in box',
+        price: '$25.00',
+        imageWidth: '120px'
+    },
+    {
+        setNumber: '40686',
+        useSetImage: true,
+        title: 'Trade Federation Troop Carrier',
+        description: 'LEGO set 40686 - new in box ',
+        price: '$45.00',
+        imageWidth: '120px'
+    },
+    {
+        setNumber: '40585',
+        useSetImage: true,
+        title: 'World of Wonders',
+        description: 'LEGO set 40585 - new in box',
+        price: '$15.00',
+        imageWidth: '120px'
+    },
+    {
+        setNumber: '40775',
+        useSetImage: true,
+        title: "Mini Knight's Castle",
+        description: 'LEGO set 40775 - new in box',
+        price: '$40.00',
+        imageWidth: '120px'
+    },
+    {
+        setNumber: '40776',
+        useSetImage: true,
+        title: "Hot Chocolate Stand",
+        description: 'LEGO set 40776 - new in box',
+        price: '$40.00',
+        imageWidth: '120px'
+    },
+    {
+        image: 'assets/parts/technic01.jpg',
+        title: 'Multiple Technic Bricks',
+        description: '2 pounds of clean bricks',
+        price: '$20.00',
+        imageWidth: '120px'
+    }
+];
+
 fetch('navbar.html')
     .then(res => res.text())
     .then(html => {
@@ -82,6 +146,9 @@ fetch('navbar.html')
             .then(res => res.text())
             .then(html => document.getElementById('footer').innerHTML = html);
     });
+
+// Render inventory cards
+renderProductCards('inventory-cards', inventoryCards);
 </script>
 </body>
 </html>

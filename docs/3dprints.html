@@ -20,50 +20,47 @@
 <!-- GALLERY -->
 <section>
     <h2 class="section-title">Available</h2>
-    <div class="gallery-grid">
-        <div class="card" style="display: flex; flex-direction: column; align-items: center; padding: 18px; border-radius: 12px; background: #fff; box-shadow: 0 2px 8px #0002;">
-            <a href="stand-details.html" style="width: 100%; text-align: center;">
-                <img src="assets/3d-prints/stand36-front-figs.jpg" alt="Stands" style="width: 120px; height: auto; border-radius: 8px; margin-bottom: 10px;">
-            </a>
-            <div style="flex: 1;">
-                <p style="margin: 0 0 8px 0; font-weight: bold;">Minifigure Stands</p>
-                <p style="margin: 0 0 8px 0; font-size: 0.95em; color: #444;">Display up to 36 minifigures. Custom colors available.</p>
-            </div>
-            <div style="margin-top: auto; font-size: 1.1em; font-weight: bold; color: #0288D1;">$8.00 - $15.00</div>
-        </div>
-        <div class="card" style="display: flex; flex-direction: column; align-items: center; padding: 18px; border-radius: 12px; background: #fff; box-shadow: 0 2px 8px #0002;">
-            <a href="organizer-details.html" style="width: 100%; text-align: center;">
-                <img src="assets/organizers.jpg" alt="Organizers" style="width: 120px; height: auto; border-radius: 8px; margin-bottom: 10px;">
-            </a>
-            <div style="flex: 1;">
-                <p style="margin: 0 0 8px 0; font-weight: bold;">Head Organizers & Sorting Tools</p>
-                <p style="margin: 0 0 8px 0; font-size: 0.95em; color: #444;">Keep your bricks sorted and easy to access. Multiple sizes available.</p>
-            </div>
-            <div style="margin-top: auto; font-size: 1.1em; font-weight: bold; color: #0288D1;">$8.00</div>
-        </div>
-        <div class="card" style="display: flex; flex-direction: column; align-items: center; padding: 18px; border-radius: 12px; background: #fff; box-shadow: 0 2px 8px #0002;">
-            <a href="prints-banner-details.html" style="width: 100%; text-align: center;">
-                <img src="assets/prints-banner.jpg" alt="Custom Prints" style="width: 120px; height: auto; border-radius: 8px; margin-bottom: 10px;">
-            </a>
-            <div style="flex: 1;">
-                <p style="margin: 0 0 8px 0; font-weight: bold;">Custom Display Accessories</p>
-                <p style="margin: 0 0 8px 0; font-size: 0.95em; color: #444;">Unique display solutions for your collection. Request custom designs.</p>
-            </div>
-            <div style="margin-top: auto; font-size: 1.1em; font-weight: bold; color: #0288D1;">$10.00</div>
-        </div>
-    </div>
+    <div class="gallery-grid" id="products-cards"></div>
 </section>
 
 <!-- CUSTOM ORDERS CTA -->
 <section>
     <h2 class="section-title">Want Something Custom?</h2>
-    <a class="btn-stud" href="custom-orders.html">Request a Custom Print</a>
+    <a class="btn-stud" href="mailto:ganorabricks@icloud.com?subject=Custom%203D%20print%20Inquiry">Request a Custom Print</a>
 </section>
 
 <div id="footer"></div>
 
 <script src="script.js"></script>
 <script>
+// Define product cards data
+const productsCards = [
+    {
+        image: 'assets/3d-prints/stand36-front-figs.jpg',
+        title: 'Minifigure Stands',
+        description: 'Display up to 36 minifigures. Custom colors available.',
+        price: '$8.00 - $15.00',
+        link: 'stand-details.html',
+        imageWidth: '120px'
+    },
+    {
+        image: 'assets/organizers.jpg',
+        title: 'Head Organizers & Sorting Tools',
+        description: 'Keep your bricks sorted and easy to access. Multiple sizes available.',
+        price: '$8.00',
+        link: 'organizer-details.html',
+        imageWidth: '120px'
+    },
+    {
+        image: 'assets/prints-banner.jpg',
+        title: 'Custom Display Accessories',
+        description: 'Unique display solutions for your collection. Request custom designs.',
+        price: '$10.00',
+        link: 'prints-banner-details.html',
+        imageWidth: '120px'
+    }
+];
+
 fetch('navbar.html')
     .then(res => res.text())
     .then(html => {
@@ -89,6 +86,9 @@ fetch('navbar.html')
             .then(res => res.text())
             .then(html => document.getElementById('footer').innerHTML = html);
     });
+
+// Render product cards
+renderProductCards('products-cards', productsCards);
 </script>
 </body>
 </html>
