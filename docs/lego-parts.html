@@ -45,8 +45,22 @@
 
 <!-- GALLERY -->
 <section>
-    <h2 class="section-title">Clean parts and sets Inventory</h2>
-    <div class="gallery-grid" id="inventory-cards"></div>
+    <h2 class="section-title">Inventory</h2>
+    
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('sets')">Sets</button>
+        <button class="tab-btn" onclick="switchTab('parts')">Clean Parts</button>
+    </div>
+    
+    <!-- Tab Content -->
+    <div id="sets-tab" class="tab-content active">
+        <div class="gallery-grid" id="sets-cards"></div>
+    </div>
+    
+    <div id="parts-tab" class="tab-content">
+        <div class="gallery-grid" id="parts-cards"></div>
+    </div>
 </section>
 
 <!-- FOOTER -->
@@ -55,7 +69,7 @@
 <script src="script.js"></script>
 <script>
 // Define product cards data
-const inventoryCards = [
+const setsCards = [
     {
         setNumber: '5009015',
         useSetImage: true,
@@ -111,7 +125,10 @@ const inventoryCards = [
         description: 'LEGO set 40776 - new in box',
         price: '$40.00',
         imageWidth: '120px'
-    },
+    }
+];
+
+const partsCards = [
     {
         image: 'assets/parts/technic01.jpg',
         title: 'Multiple Technic Bricks',
@@ -120,6 +137,23 @@ const inventoryCards = [
         imageWidth: '120px'
     }
 ];
+
+// Tab switching function
+function switchTab(tabName) {
+    // Hide all tab contents
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    
+    // Remove active class from all buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Show selected tab
+    document.getElementById(tabName + '-tab').classList.add('active');
+    event.target.classList.add('active');
+}
 
 fetch('navbar.html')
     .then(res => res.text())
@@ -148,7 +182,8 @@ fetch('navbar.html')
     });
 
 // Render inventory cards
-renderProductCards('inventory-cards', inventoryCards);
+renderProductCards('sets-cards', setsCards);
+renderProductCards('parts-cards', partsCards);
 </script>
 </body>
 </html>

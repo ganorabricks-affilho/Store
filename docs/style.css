@@ -27,7 +27,7 @@ a {
     --orange: #F57C00;
     --orange-dark: #D56900;
     --blue: #0288D1;
-    --blue-dark: #006D9F;
+    --blue-dark: #015b85;
     --light: #ECECEC;
     --white: #FFF;
 }
@@ -36,7 +36,7 @@ a {
    HEADER / NAVBAR
 --------------------------------*/
 nav {
-    background: var(--orange);
+    background: var(--orange-dark);
     padding: 14px 8%;
     display: flex;
     justify-content: space-between;
@@ -156,7 +156,7 @@ nav ul li a.btn-stud,
 
 nav ul li a.btn-stud:hover,
 .btn-stud:hover {
-    transform: translateY(-3px) !important;
+    transform: translateY(-6px) !important;
     background: var(--blue-dark) !important;
     box-shadow: 0 8px 0 #004D75 !important;
 }
@@ -193,6 +193,44 @@ section {
     margin-bottom: 20px;
     font-size: 1.9rem;
     color: var(--blue-dark);
+}
+
+/* TABS */
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.tab-btn {
+    background: white;
+    color: var(--blue-dark);
+    border: 2px solid var(--blue);
+    padding: 12px 30px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.tab-btn:hover {
+    background: var(--blue);
+    color: white;
+}
+
+.tab-btn.active {
+    background: var(--blue);
+    color: white;
+    box-shadow: 0 4px 0 var(--blue-dark);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
 }
 
 /* OFFER LIST */
@@ -268,8 +306,8 @@ section {
    FOOTER
 --------------------------------*/
 footer {
-    background: #222;
-    color: #eee;
+    background: #9e9b9b;
+    color: #050505;
     text-align: center;
     padding: 20px;
     position: fixed;
