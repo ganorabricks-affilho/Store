@@ -1,0 +1,23 @@
+{
+  "name": "store",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "xvfb-run playwright test --headed",
+    "test:ui": "xvfb-run playwright test --ui",
+    "test:mobile": "playwright test --project=mobile",
+    "test:report": "playwright show-report"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "playwright": "^1.57.0"
+  }
+}
