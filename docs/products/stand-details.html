@@ -16,200 +16,8 @@
     
     <title>Minifigure Stands — Ganorabricks</title>
     <link rel="stylesheet" href="../style.css">
-    <style>
-        /* Product detail specific styles */
-        .product-detail-nav {
-            background: var(--orange);
-            padding: 14px 8%;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            color: white;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 999;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--orange-dark);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: bold;
-            transition: 0.2s;
-            cursor: pointer;
-        }
-
-        .back-btn:hover {
-            background: #B85700;
-        }
-
-        .product-header {
-            padding: 40px 8%;
-            background: white;
-            border-bottom: 4px solid var(--orange);
-        }
-
-        .product-header h1 {
-            font-size: 2.5rem;
-            color: var(--blue-dark);
-            margin-bottom: 10px;
-        }
-
-        .product-price {
-            font-size: 2rem;
-            color: var(--orange);
-            font-weight: bold;
-            margin-top: 20px;
-        }
-
-        .product-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            padding: 40px 8%;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .image-gallery {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .main-image {
-            width: 100%;
-            height: 500px;
-            object-fit: contain;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            background: white;
-            cursor: pointer;
-        }
-
-        /* Modal styles */
-        .modal-zoom {
-            display: none;
-            position: fixed;
-            z-index: 10000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.9);
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-zoom.active {
-            display: flex;
-        }
-
-        .modal-zoom-content {
-            max-width: 90%;
-            max-height: 90%;
-            object-fit: contain;
-        }
-
-        .modal-zoom-close {
-            position: absolute;
-            top: 20px;
-            right: 40px;
-            color: white;
-            font-size: 40px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .modal-zoom-close:hover {
-            color: #ccc;
-        }
-
-        .thumbnail-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 12px;
-        }
-
-        .thumbnail {
-            width: 100%;
-            aspect-ratio: 1;
-            object-fit: cover;
-            border-radius: 8px;
-            cursor: pointer;
-            border: 3px solid transparent;
-            transition: 0.2s;
-        }
-
-        .thumbnail:hover,
-        .thumbnail.active {
-            border-color: var(--orange);
-            transform: scale(1.05);
-        }
-
-        .product-info {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-
-        .info-section {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            border-left: 6px solid var(--blue);
-        }
-
-        .info-section h2 {
-            color: var(--blue-dark);
-            margin-bottom: 15px;
-            font-size: 1.5rem;
-        }
-
-        .info-section p,
-        .info-section ul {
-            line-height: 1.8;
-            color: #444;
-        }
-
-        .info-section ul {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        .info-section ul li::before {
-            content: "✓ ";
-            color: var(--orange);
-            font-weight: bold;
-            margin-right: 8px;
-        }
-
-        .cta-section {
-            background: var(--orange);
-            color: white;
-            padding: 25px;
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .cta-section h3 {
-            margin-bottom: 15px;
-        }
-
-        @media (max-width: 900px) {
-            .product-content {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="../product-details.css">
+    <script src="../prices.js"></script>
 </head>
 <body>
 
@@ -229,7 +37,7 @@
 <div class="product-header">
     <h1>Minifigure Display Stands</h1>
     <p style="font-size: 1.2rem; color: #666;">Professional display solution for your LEGO® minifigure collection</p>
-    <div class="product-price">$8.00 - $15.00</div>
+    <div class="product-price" id="product-price">Loading price...</div>
 </div>
 
 <!-- PRODUCT CONTENT -->
@@ -344,6 +152,16 @@ function openModal() {
 function closeModal() {
     document.getElementById('imageModal').classList.remove('active');
 }
+
+// Load price from centralized source
+window.addEventListener('load', async () => {
+    const productId = 'stand';
+    const price = await getPrice(productId);
+    const priceElement = document.getElementById('product-price');
+    if (priceElement) {
+        priceElement.textContent = price;
+    }
+});
 </script>
 </body>
 </html>

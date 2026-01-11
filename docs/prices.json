@@ -1,0 +1,121 @@
+{
+  "3d-prints": {
+    "stand": {
+      "id": "stand",
+      "name": "Minifigure Display Stands",
+      "price": "$4.50 - $15.00 per unit",
+      "displayPrice": "$4.50 - $15.00"
+    },
+    "tray": {
+      "id": "tray",
+      "name": "Minifigure Head Organizer Trays",
+      "price": "$5.00 each set",
+      "displayPrice": "$5.00 each set of 3 trays (one full drawer)"
+    },
+    "akro-mills-divider": {
+      "id": "akro-mills-divider",
+      "name": "Akro Mills dividers",
+      "price": "$2.00 - $4.00 per pack",
+      "displayPrice": "$2.00 per pack of 10 (small) / $4.00 per pack of 5 (large)"
+    },
+    "parkside-divider": {
+      "id": "parkside-divider",
+      "name": "LIDL ParkSide small part organizer dividers",
+      "price": "$2.00 per pack",
+      "displayPrice": "$2.00 per pack of 10"
+    },
+    "ruler": {
+      "id": "ruler",
+      "name": "LEGO® Ruler",
+      "price": "$2.00 each unit",
+      "displayPrice": "$2.00 each unit"
+    },
+    "brickheadz-stands": {
+      "id": "brickheadz-stands",
+      "name": "BrickHeadz stands",
+      "price": "$3.00 each unit",
+      "displayPrice": "$3.00 each unit"
+    }
+  },
+  "lego-sets": {
+    "5009015": {
+      "id": "5009015",
+      "setNumber": "5009015",
+      "title": "Cerebro",
+      "description": "LEGO set 5009015 - new in box",
+      "price": "$75.00"
+    },
+    "40764": {
+      "id": "40764",
+      "setNumber": "40764",
+      "title": "Easter Bunny Surprise",
+      "description": "LEGO set 40764 - new in box (2 available)",
+      "price": "$5.00 each"
+    },
+    "40782": {
+      "id": "40782",
+      "setNumber": "40782",
+      "title": "Tropical Rainforest Diorama",
+      "description": "LEGO set 40782 - new in box",
+      "price": "$25.00"
+    },
+    "40686": {
+      "id": "40686",
+      "setNumber": "40686",
+      "title": "Trade Federation Troop Carrier",
+      "description": "LEGO set 40686 - new in box",
+      "price": "$45.00"
+    },
+    "40585": {
+      "id": "40585",
+      "setNumber": "40585",
+      "title": "World of Wonders",
+      "description": "LEGO set 40585 - new in box",
+      "price": "$15.00"
+    },
+    "40775": {
+      "id": "40775",
+      "setNumber": "40775",
+      "title": "Mini Knight's Castle",
+      "description": "LEGO set 40775 - new in box",
+      "price": "$15.00"
+    },
+    "40776": {
+      "id": "40776",
+      "setNumber": "40776",
+      "title": "Hot Chocolate Stand",
+      "description": "LEGO set 40776 - new in box",
+      "price": "$20.00"
+    },
+    "40704": {
+      "id": "40704",
+      "setNumber": "40704",
+      "title": "Micro NINJAGO docks",
+      "description": "LEGO set 40704 - new in box",
+      "price": "$15.00"
+    },
+    "40774": {
+      "id": "40774",
+      "setNumber": "40774",
+      "title": "Classic Animation Scenes",
+      "description": "LEGO set 40774 - new in box",
+      "price": "$25.00"
+    }
+  },
+  "lego-parts": {
+    "technic-bricks": {
+      "id": "technic-bricks",
+      "title": "Multiple Technic Bricks",
+      "description": "2 pounds of clean bricks",
+      "price": "out of stock"
+    },
+    "bricklink": {
+      "name": "BrickLink Store",
+      "url": "https://store.bricklink.com/Ganorabricks#/terms"
+    },
+    "brickowl": {
+      "name": "BrickOwl Store",
+      "url": "https://www.brickowl.com/search/inventory?q=Ganorabricks"
+    }
+  }
+}

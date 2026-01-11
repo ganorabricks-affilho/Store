@@ -16,6 +16,7 @@
     
     <title>Ganorabricks — LEGO® Parts</title>
     <link rel="stylesheet" href="style.css">
+    <script src="prices.js"></script>
 </head>
 <body>
 
@@ -82,85 +83,104 @@
 // Define product cards data
 const setsCards = [
     {
+        setId: '5009015',
+        image: '',
         setNumber: '5009015',
         useSetImage: true,
         title: 'Cerebro',
         description: 'LEGO set 5009015 - new in box',
-        price: '$75.00',
+        price: '',
         imageWidth: '120px'
     },
     {
+        setId: '40764',
+        image: '',
         setNumber: '40764',
         useSetImage: true,
         title: 'Easter Bunny Surprise',
         description: 'LEGO set 40764 - new in box (2 available)',
-        price: '$5.00 each',
+        price: '',
         imageWidth: '120px'
     },
     {
+        setId: '40782',
+        image: '',
         setNumber: '40782',
         useSetImage: true,
         title: 'Tropical Rainforest Diorama',
         description: 'LEGO set 40782 - new in box',
-        price: '$25.00',
+        price: '',
         imageWidth: '120px'
     },
     {
+        setId: '40686',
+        image: '',
         setNumber: '40686',
         useSetImage: true,
         title: 'Trade Federation Troop Carrier',
         description: 'LEGO set 40686 - new in box ',
-        price: '$45.00',
+        price: '',
         imageWidth: '120px'
     },
     {
+        setId: '40585',
+        image: '',
         setNumber: '40585',
         useSetImage: true,
         title: 'World of Wonders',
         description: 'LEGO set 40585 - new in box',
-        price: '$15.00',
+        price: '',
         imageWidth: '120px'
     },
     {
+        setId: '40775',
+        image: '',
         setNumber: '40775',
         useSetImage: true,
         title: "Mini Knight's Castle",
         description: 'LEGO set 40775 - new in box',
-        price: '$15.00',
+        price: '',
         imageWidth: '120px'
     },
     {
+        setId: '40776',
+        image: '',
         setNumber: '40776',
         useSetImage: true,
         title: "Hot Chocolate Stand",
         description: 'LEGO set 40776 - new in box',
-        price: '$20.00',
+        price: '',
         imageWidth: '120px'
     },
     {
+        setId: '40704',
+        image: '',
         setNumber: '40704',
         useSetImage: true,
         title: "Micro NINJAGO docks",
         description: 'LEGO set 40704 - new in box',
-        price: '$15.00',
+        price: '',
         imageWidth: '120px'
     },
     {
+        setId: '40774',
+        image: '',
         setNumber: '40774',
         useSetImage: true,
         title: "Classic Animation Scenes",
         description: 'LEGO set 40774 - new in box',
-        price: '$25.00',
+        price: '',
         imageWidth: '120px'
     }
 ];
 
 const partsCards = [
     {
+        partId: 'technic-bricks',
         image: 'assets/parts/technic01.jpg',
         title: 'Multiple Technic Bricks',
         description: '2 pounds of clean bricks',
-        price: 'out of stock',
+        price: '',
         imageWidth: '120px'
     }
 ];
@@ -180,6 +200,35 @@ function switchTab(tabName) {
     // Show selected tab
     document.getElementById(tabName + '-tab').classList.add('active');
     event.target.classList.add('active');
+}
+
+// Load prices from centralized file
+async function initInventory() {
+    try {
+        const pricesLoaded = await loadPrices();
+        console.log('Prices loaded:', pricesLoaded);
+        
+        // Update set prices
+        for (let card of setsCards) {
+            card.price = await getSetPrice(card.setId);
+            console.log(`Set ${card.setId} price:`, card.price);
+        }
+        
+        // Update part prices
+        for (let card of partsCards) {
+            card.price = await getPartPrice(card.partId);
+            console.log(`Part ${card.partId} price:`, card.price);
+        }
+        
+        // Render cards after prices are loaded
+        console.log('Rendering sets cards:', setsCards);
+        renderProductCards('sets-cards', setsCards);
+        
+        console.log('Rendering parts cards:', partsCards);
+        renderProductCards('parts-cards', partsCards);
+    } catch (error) {
+        console.error('Error in initInventory:', error);
+    }
 }
 
 fetch('navbar.html')
@@ -210,9 +259,8 @@ fetch('navbar.html')
             .then(html => document.getElementById('footer').innerHTML = html);
     });
 
-// Render inventory cards
-renderProductCards('sets-cards', setsCards);
-renderProductCards('parts-cards', partsCards);
+// Initialize inventory with prices when DOM is ready
+document.addEventListener('DOMContentLoaded', initInventory);
 </script>
 </body>
 </html>
