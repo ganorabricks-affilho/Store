@@ -1,5 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
+test.use({ viewport: { width: 1280, height: 720 } });
+
 test.describe('Accessibility', () => {
   test('should have proper document structure', async ({ page }) => {
     await page.goto('/');
@@ -37,10 +39,9 @@ test.describe('Accessibility', () => {
     await page.goto('/');
     
     // Wait for navbar to load (it's loaded via fetch)
-    await page.waitForSelector('nav a.btn-stud', { state: 'visible', timeout: 10000 });
+    await page.waitForSelector('nav ul a', { state: 'visible', timeout: 10000 });
     
-    // Test navigation buttons
-    const navButton = page.locator('nav a.btn-stud').first();
+    const navButton = page.locator('nav ul a').first();
     await expect(navButton).toBeVisible();
     
     const box = await navButton.boundingBox();
@@ -79,7 +80,7 @@ test.describe('SEO', () => {
   });
 
   test('should have descriptive page titles on all pages', async ({ page }) => {
-    const pages = ['/', '/lego-parts.html', '/3dprints.html', '/pab-service.html'];
+    const pages = ['/', '/lego-parts.html', '/3dprints.html', '/part-highlights.html'];
     
     for (const url of pages) {
       await page.goto(url);

@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    
-    <!-- Google tag (gtag.js) -->
+    <meta name="description" content="Catalog of Ganorabricks 3D-printed LEGO accessories: minifigure stands, head trays, bin dividers, and a brick ruler. Email to ask about one.">
+    <title>Ganorabricks — 3D Printed LEGO® Accessories</title>
+    <link rel="stylesheet" href="style.css">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WQS0X98RMY"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -13,138 +13,73 @@
       gtag('js', new Date());
       gtag('config', 'G-WQS0X98RMY');
     </script>
-    
-    <title>Ganorabricks — 3D Printed LEGO® Accessories</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="prices.js"></script>
 </head>
 <body>
 
-<!-- NAVBAR -->
 <div id="navbar"></div>
 
-<!-- HERO / INTRO -->
-<section>
-    <h1 class="section-title">3D Printed Accessories</h1>
-    <p>Custom-designed stands, mounts, organizers, and display pieces compatible with LEGO®. These are all printed on demand and can be ordered as many as needed. Multiple colors available, ask for details.</p>
+<section class="page-intro">
+    <h1 class="section-title">3D printed accessories</h1>
+    <p>Stands, organizers, and a measuring tool that fit LEGO®. Each one is printed to order, and colors depend on what is on the printer. Prices are not listed — email me if you want one and I will reply with a price and shipping.</p>
 </section>
 
-<!-- GALLERY -->
 <section>
-    <h2 class="section-title">Inventory</h2>
+    <h2 class="section-title">Catalog</h2>
     <div class="gallery-grid" id="products-cards"></div>
 </section>
 
-<!-- CUSTOM ORDERS CTA -->
-<section>
-    <h2 class="section-title">Want Something Custom?</h2>
-    <a class="btn-stud" href="mailto:ganorabricks@icloud.com?subject=Custom%203D%20print%20Inquiry">Request a Custom Print</a>
+<section class="band">
+    <h2 class="section-title">Want something custom?</h2>
+    <p>If you need a size, color, or fit that is not in the catalog, send a note with what you are trying to hold or organize.</p>
+    <a class="btn-stud" href="mailto:ganorabricks@icloud.com?subject=Custom%203D%20print%20inquiry">Request a custom print</a>
 </section>
 
 <div id="footer"></div>
 
 <script src="script.js"></script>
 <script>
-// Define product cards data with product IDs for price lookup
 const productsCards = [
     {
-        id: 'stand',
-        image: 'assets/3d-prints/stand36-front-figs.jpg',
-        title: 'Minifigure Stands',
-        description: 'Display up to 36 minifigures. Custom colors available.',
-        price: '',
-        link: 'products/stand-details.html',
-        imageWidth: '120px'
+        image: "assets/3d-prints/stand36-front-figs.jpg",
+        title: "Minifigure stands",
+        description: "Display 12, 24, or 36 minifigures. Includes a small plate for a label.",
+        link: "products/stand-details.html"
     },
     {
-        id: 'tray',
-        image: 'assets/3d-prints/tray02.JPEG',
-        title: 'Minifigure Head Organizer Trays',
-        description: 'Keep your minifigure heads organized and accessible.',
-        price: '',
-        link: 'products/tray-details.html',
-        imageWidth: '120px'
+        image: "assets/3d-prints/tray02.JPEG",
+        title: "Minifigure head trays",
+        description: "Trays that sit in an Akro-Mils small drawer and keep heads in labeled rows.",
+        link: "products/tray-details.html"
     },
     {
-        id: 'akro-mills-divider',
-        image: 'assets/3d-prints/akro-mills-divider-01.jpeg',
-        title: 'Akro Mills dividers',
-        description: 'Dividers for Akro Mills storage bins, large and small sizes available.',
-        price: '',
-        link: 'products/akro-mills-divider-details.html',
-        imageWidth: '120px'
+        image: "assets/3d-prints/akro-mills-divider-01.jpeg",
+        title: "Akro-Mils dividers",
+        description: "Dividers for Akro-Mils small-parts cabinets. Small and large sizes.",
+        link: "products/akro-mills-divider-details.html"
     },
     {
-        id: 'parkside-divider',
-        image: 'assets/3d-prints/parkside-divider-01.jpeg',
-        title: 'LIDL ParkSide small part organizer dividers',
-        description: 'Dividers for LIDL ParkSide storage bins',
-        link: 'products/parkside-divider-details.html',
-        price: '',
-        imageWidth: '120px'
+        image: "assets/3d-prints/parkside-divider-01.jpeg",
+        title: "Parkside organizer dividers",
+        description: "Dividers for the LIDL Parkside small-parts organizer.",
+        link: "products/parkside-divider-details.html"
     },
     {
-        id: 'ruler',
-        image: 'assets/3d-prints/lego-ruler-01.jpeg',
-        title: 'LEGO® Ruler',
-        description: 'Ruler to measure bricks and axels in an easy way.',
-        price: '',
-        link: 'products/ruler-details.html',
-        imageWidth: '120px'
+        image: "assets/3d-prints/lego-ruler-01.jpeg",
+        title: "LEGO® ruler",
+        description: "A ruler marked for bricks and axles, so you can measure a part without counting studs.",
+        link: "products/ruler-details.html"
     },
     {
-        id: 'brickheadz-stands',
-        image: 'assets/3d-prints/coming-soon-hanging-sign.webp',
-        title: 'BrickHeadz stands',
-        description: 'Stands for BrickHeadz figures to stack 2 figures.',
-        price: '',
-        imageWidth: '120px'
+        image: "assets/3d-prints/coming-soon-hanging-sign.webp",
+        title: "BrickHeadz stands",
+        description: "A stand that stacks two BrickHeadz figures.",
+        note: "Photos coming soon",
+        link: "#"
     }
 ];
 
-// Load prices from centralized file
-async function initProductCards() {
-    await loadPrices();
-    
-    // Update prices from centralized source
-    for (let card of productsCards) {
-        card.price = await getPrice(card.id, 'card');
-    }
-    
-    // Render cards after prices are loaded
-    renderProductCards('products-cards', productsCards);
-}
-
-fetch('navbar.html')
-    .then(res => res.text())
-    .then(html => {
-        document.getElementById('navbar').innerHTML = html;
-        // Initialize hamburger menu
-        initHamburgerMenu();
-        // Re-observe sections for fade-in animation after navbar loads
-        if (window.IntersectionObserver) {
-            document.querySelectorAll('section').forEach(section => {
-                section.classList.remove('section-visible');
-            });
-            const observerOptions = { threshold: 0.1 };
-            const sectionObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if(entry.isIntersecting){
-                        entry.target.classList.add('section-visible');
-                    }
-                });
-            }, observerOptions);
-            document.querySelectorAll('section').forEach(section => {
-                sectionObserver.observe(section);
-            });
-        }
-        fetch('footer.html')
-            .then(res => res.text())
-            .then(html => document.getElementById('footer').innerHTML = html);
-    });
-
-// Initialize product cards with prices
-initProductCards();
+renderProductCards("products-cards", productsCards);
+loadSiteChrome();
 </script>
 </body>
 </html>

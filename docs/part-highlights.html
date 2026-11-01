@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Photos of Ganorabricks LEGO parts priced at $10 and up. Email if you want one you see here.">
+    <title>Ganorabricks — Parts $10+</title>
+    <link rel="stylesheet" href="style.css">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WQS0X98RMY"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-WQS0X98RMY');
+    </script>
+</head>
+<body>
+
+<div id="navbar"></div>
+
+<section class="page-intro">
+    <h1 class="section-title">Parts $10 and up</h1>
+    <p>These are photos of higher-value parts, so you can see condition and color before you ask. Nothing on this page is a checkout. If you want one, email me and I will tell you whether it is still available.</p>
+    <p>Everything else is in the stores: <a class="text-link" href="https://store.bricklink.com/Ganorabricks#/shop" target="_blank" rel="noopener noreferrer">BrickLink</a> and <a class="text-link" href="https://ganorabricks.brickowl.com/" target="_blank" rel="noopener noreferrer">BrickOwl</a>.</p>
+</section>
+
+<section>
+    <h2 class="section-title">Photo highlights</h2>
+    <div id="highlights"></div>
+</section>
+
+<div id="footer"></div>
+
+<script src="script.js"></script>
+<script>
+// To add a part: save the photo in docs/assets/parts/, then add a line below.
+// image: path from this page, title: what the buyer should see, note: color or condition (optional).
+const expensiveParts = [
+    // { image: "assets/parts/example.jpg", title: "Black torso, red arms", note: "Used, excellent" },
+];
+
+renderHighlights("highlights", expensiveParts);
+loadSiteChrome();
+</script>
+</body>
+</html>

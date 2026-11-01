@@ -1,123 +1,139 @@
 // ------------------------------
-// HAMBURGER MENU TOGGLE
+// SITE CHROME (nav + footer)
 // ------------------------------
 function initHamburgerMenu() {
     const hamburger = document.querySelector(".hamburger");
     const nav = document.querySelector("nav");
 
-    if (hamburger && nav) {
-        hamburger.addEventListener("click", () => {
-            nav.classList.toggle("active");
-        });
+    if (!hamburger || !nav) return;
 
-        // Close menu when clicking a link (mobile)
-        document.querySelectorAll("nav ul li a").forEach(link => {
-            link.addEventListener("click", () => {
-                nav.classList.remove("active");
-            });
+    hamburger.addEventListener("click", () => {
+        const open = nav.classList.toggle("active");
+        hamburger.setAttribute("aria-expanded", open ? "true" : "false");
+        hamburger.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    });
+
+    document.querySelectorAll("nav ul a").forEach(link => {
+        link.addEventListener("click", () => {
+            nav.classList.remove("active");
+            hamburger.setAttribute("aria-expanded", "false");
+            hamburger.setAttribute("aria-label", "Open menu");
         });
+    });
+
+    const path = window.location.pathname.split("/").pop() || "index.html";
+    document.querySelectorAll("nav ul a").forEach(link => {
+        const file = (link.getAttribute("href") || "").split("/").pop();
+        if (file === path) link.setAttribute("aria-current", "page");
+    });
+}
+
+function loadSiteChrome() {
+    const jobs = [];
+    const navEl = document.getElementById("navbar");
+    const footerEl = document.getElementById("footer");
+
+    if (navEl) {
+        jobs.push(
+            fetch("/navbar.html")
+                .then(res => res.text())
+                .then(html => {
+                    navEl.innerHTML = html;
+                    initHamburgerMenu();
+                })
+        );
     }
+
+    if (footerEl) {
+        jobs.push(
+            fetch("/footer.html")
+                .then(res => res.text())
+                .then(html => {
+                    footerEl.innerHTML = html;
+                })
+        );
+    }
+
+    return Promise.all(jobs);
 }
 
 // ------------------------------
-// CARD FLOATING ANIMATION ON HOVER
+// 3D PRINT CATALOG CARDS
 // ------------------------------
-const cards = document.querySelectorAll(".card");
-
-cards.forEach(card => {
-    card.addEventListener("mouseenter", () => {
-        card.style.transform = "translateY(-6px)";
-        card.style.boxShadow = "0 12px 25px rgba(0,0,0,0.2)";
-    });
-
-    card.addEventListener("mouseleave", () => {
-        card.style.transform = "translateY(0)";
-        card.style.boxShadow = "0 4px 8px rgba(0,0,0,0.1)";
-    });
-});
-
-// ------------------------------
-// SMOOTH SECTION ANIMATION ON SCROLL
-// ------------------------------
-const sections = document.querySelectorAll("section");
-
-const observerOptions = {
-    threshold: 0.1
-};
-
-const sectionObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-        if(entry.isIntersecting){
-            entry.target.classList.add("section-visible");
-        }
-    });
-}, observerOptions);
-
-sections.forEach(section => {
-    sectionObserver.observe(section);
-});
-
-// ------------------------------
-// REUSABLE PRODUCT CARD COMPONENT
-// ------------------------------
-// Generate BrickLink image URL from set number
-function getBrickLinkImageUrl(setNumber) {
-    // BrickLink uses format: https://img.bricklink.com/ItemImage/SN/0/SETNUMBER-1.png
-    const formattedNumber = setNumber.toString().replace(/-/g, '');
-    return `https://img.bricklink.com/ItemImage/SN/0/${formattedNumber}-1.png`;
-}
-
-// Generate Rebrickable image URL from set number (alternative)
-function getRebrickableImageUrl(setNumber) {
-    return `https://cdn.rebrickable.com/media/sets/${setNumber}-1.jpg`;
-}
-
 function createProductCard(params) {
     const {
         image,
         title,
         description,
-        price,
-        link = '#',
-        imageWidth = '120px',
-        setNumber = null,
-        useSetImage = false // Set to true to auto-generate image from setNumber
+        link = "#",
+        note = ""
     } = params;
 
-    // Determine image source
-    let imageSrc = image;
-    if (useSetImage && setNumber) {
-        imageSrc = getBrickLinkImageUrl(setNumber);
-    }
+    const card = document.createElement("article");
+    card.className = "card product-card";
 
-    const card = document.createElement('div');
-    card.className = 'card product-card';
-    card.style.cssText = 'display: flex; flex-direction: column; align-items: center; padding: 18px; border-radius: 12px; background: #fff; box-shadow: 0 2px 8px #0002;';
-
-    const linkEl = link !== '#' ? `<a href="${link}" style="width: 100%; text-align: center;">` : '<div style="width: 100%; text-align: center;">';
-    const closeLinkEl = link !== '#' ? '</a>' : '</div>';
+    const subject = encodeURIComponent("Question about " + title);
+    const askHref = `mailto:ganorabricks@icloud.com?subject=${subject}`;
+    const hasPage = link && link !== "#";
+    const media = hasPage
+        ? `<a class="product-card-media" href="${link}"><img src="${image}" alt="${title}" loading="lazy"></a>`
+        : `<div class="product-card-media"><img src="${image}" alt="${title}" loading="lazy"></div>`;
 
     card.innerHTML = `
-        ${linkEl}
-            <img src="${imageSrc}" alt="${title}" style="width: ${imageWidth}; height: ${imageWidth}; object-fit: contain; border-radius: 8px; margin-bottom: 10px;">
-        ${closeLinkEl}
-        <div style="flex: 1;">
-            <p style="margin: 0 0 8px 0; font-weight: bold; text-align: center;">${title}</p>
-            ${description ? `<p style="margin: 0 0 8px 0; font-size: 0.95em; color: #444; text-align: center;">${description}</p>` : ''}
+        ${media}
+        <h3>${title}</h3>
+        ${description ? `<p class="card-copy">${description}</p>` : ""}
+        ${note ? `<p class="card-note">${note}</p>` : ""}
+        <div class="card-actions">
+            ${hasPage ? `<a class="btn-stud" href="${link}">See details</a>` : ""}
+            <a class="text-link" href="${askHref}">Ask about this</a>
         </div>
-        <div style="margin-top: auto; font-size: 1.1em; font-weight: bold; color: #0288D1;">${price}</div>
     `;
 
     return card;
 }
 
-// Helper function to create multiple product cards
 function renderProductCards(containerId, cardsData) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
     cardsData.forEach(cardData => {
-        const card = createProductCard(cardData);
-        container.appendChild(card);
+        container.appendChild(createProductCard(cardData));
     });
+}
+
+// ------------------------------
+// EXPENSIVE PART HIGHLIGHTS
+// ------------------------------
+function renderHighlights(containerId, items) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    if (!items || items.length === 0) {
+        container.innerHTML = `
+            <div class="empty-gallery">
+                <p class="empty-title">Photos coming soon</p>
+                <p>When a part is worth a closer look, its photo will show up here. The full inventory stays on BrickLink and BrickOwl.</p>
+            </div>
+        `;
+        return;
+    }
+
+    const grid = document.createElement("div");
+    grid.className = "gallery-grid";
+
+    items.forEach(item => {
+        const card = document.createElement("article");
+        card.className = "card highlight-card";
+        const subject = encodeURIComponent("Question about " + item.title);
+        card.innerHTML = `
+            <img src="${item.image}" alt="${item.title}" loading="lazy">
+            <h3>${item.title}</h3>
+            ${item.note ? `<p class="card-copy">${item.note}</p>` : ""}
+            <a class="btn-stud" href="mailto:ganorabricks@icloud.com?subject=${subject}">Ask about this part</a>
+        `;
+        grid.appendChild(card);
+    });
+
+    container.appendChild(grid);
 }

@@ -17,27 +17,16 @@
     <title>LEGO® Ruler — Ganorabricks</title>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="../product-details.css">
-    <script src="../prices.js"></script>
 </head>
 <body>
 
-<!-- CUSTOM NAVBAR FOR PRODUCT PAGES -->
-<nav class="product-detail-nav">
-    <a href="javascript:history.back()" class="back-btn">
-        <span>←</span>
-        <span>Back</span>
-    </a>
-    <div style="display: flex; align-items: center; gap: 12px;">
-        <img src="../assets/ganorabricks-logo-full.png" alt="Ganorabricks Logo" style="width: 50px; height: 50px; object-fit: contain;">
-        <span style="font-size: 1.3rem; font-weight: bold;">Ganorabricks</span>
-    </div>
-</nav>
+<div id="navbar"></div>
 
 <!-- PRODUCT HEADER -->
 <div class="product-header">
     <h1>LEGO® Ruler</h1>
-    <p style="font-size: 1.2rem; color: #666;">Ruler to measure bricks and axels in an easy way.</p>
-    <div class="product-price" id="product-price">Loading price...</div>
+    <p style="font-size: 1.2rem; color: #666;">Ruler to measure bricks and axles in an easy way.</p>
+    <p class="ask-note">Email me if you want this print. I will reply with a price and shipping.</p>
 </div>
 
 <!-- PRODUCT CONTENT -->
@@ -60,7 +49,7 @@
         <div class="info-section">
             <h2>Product Description</h2>
             <p>
-                High-quality 3D printed LEGO® ruler designed to measure bricks and axels easily.
+                High-quality 3D printed LEGO® ruler designed to measure bricks and axles easily.
                 This ruler provides an easy way to measure and organize your LEGO® collection.
             </p>
             <p>
@@ -72,7 +61,7 @@
         <div class="info-section">
             <h2>Features</h2>
             <ul>
-                <li>Quickly measure LEGO® bricks and axels</li>
+                <li>Quickly measure LEGO® bricks and axles</li>
                 <li>Easy-to-read markings</li>
                 <li>Durable PLA material</li>
                 <li>Smooth, professional finish</li>
@@ -88,10 +77,10 @@
         </div>
 
         <div class="cta-section">
-            <h3>Ready to Order?</h3>
-            <p style="margin-bottom: 20px;">Contact us to place your order or ask about custom configurations</p>
-            <a class="btn-stud" href="mailto:ganorabricks@icloud.com?subject=Order%20LEGO%20Ruler" style="background: white; color: var(--orange); display: inline-block;">
-                Contact to Order
+            <h3>Interested?</h3>
+            <p style="margin-bottom: 20px;">Tell me the size, color, and how many you want. I will reply with a price and shipping.</p>
+            <a class="btn-stud btn-on-dark" href="mailto:ganorabricks@icloud.com?subject=Question%20about%20LEGO%20Ruler">
+                Ask about this print
             </a>
         </div>
     </div>
@@ -107,10 +96,7 @@
 
 <script src="../script.js"></script>
 <script>
-// Load footer
-fetch('../footer.html')
-    .then(res => res.text())
-    .then(html => document.getElementById('footer').innerHTML = html);
+loadSiteChrome();
 
 // Image gallery functionality
 function changeImage(src) {
@@ -137,15 +123,6 @@ function closeModal() {
     document.getElementById('imageModal').classList.remove('active');
 }
 
-// Load price from centralized source
-window.addEventListener('load', async () => {
-    const productId = 'ruler';
-    const price = await getPrice(productId);
-    const priceElement = document.getElementById('product-price');
-    if (priceElement) {
-        priceElement.textContent = price;
-    }
-});
 </script>
 </body>
 </html>

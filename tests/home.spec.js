@@ -1,5 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
+test.use({ viewport: { width: 1280, height: 720 } });
+
 test.describe('Home Page', () => {
   test('should load home page successfully', async ({ page }) => {
     await page.goto('/');
@@ -24,13 +26,13 @@ test.describe('Home Page', () => {
     // Wait for navbar to load
     await page.waitForSelector('nav ul', { timeout: 10000 });
     
-    const legoPartsLink = page.locator('nav a[href="lego-parts.html"]');
-    const printsLink = page.locator('nav a[href="3dprints.html"]');
-    const pabLink = page.locator('nav a[href="pab-service.html"]');
+    const legoPartsLink = page.locator('nav a[href$="lego-parts.html"]');
+    const printsLink = page.locator('nav a[href$="3dprints.html"]');
+    const highlightsLink = page.locator('nav a[href$="part-highlights.html"]');
     
     await expect(legoPartsLink).toContainText('LEGO');
     await expect(printsLink).toContainText('3D Prints');
-    await expect(pabLink).toContainText('Pick a Brick');
+    await expect(highlightsLink).toContainText('Parts $10+');
   });
 
   test('should have hero section with content', async ({ page }) => {
@@ -44,14 +46,15 @@ test.describe('Home Page', () => {
     await expect(heroDescription).toBeVisible();
   });
 
-  test('should have "What I Offer" section', async ({ page }) => {
+  test('should have a start-here section', async ({ page }) => {
     await page.goto('/');
     
-    const offerSection = page.locator('.offer');
-    await expect(offerSection).toBeVisible();
+    const doors = page.locator('.doors');
+    await expect(doors).toBeVisible();
     
-    const sectionTitle = page.locator('.section-title');
-    await expect(sectionTitle.first()).toContainText('What I Offer');
+    const sectionTitle = page.locator('.doors .section-title');
+    await expect(sectionTitle).toContainText('Start here');
+    await expect(page.locator('.door-card')).toHaveCount(3);
   });
 
   test('should have footer', async ({ page }) => {

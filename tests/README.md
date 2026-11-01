@@ -35,7 +35,7 @@ npm run test:report
 - Navigation bar with logo
 - All navigation links present
 - Hero section content
-- "What I Offer" section
+- Start here section
 - Footer visibility
 - Google Analytics tracking
 
@@ -43,7 +43,7 @@ npm run test:report
 - Navigate between all pages
 - Logo click returns to home
 - Store links (BrickLink, BrickOwl)
-- Tab switching functionality
+- Part highlights placeholder
 - Product card display
 
 ### Mobile Responsive (`tests/mobile.spec.js`)

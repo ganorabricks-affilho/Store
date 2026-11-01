@@ -29,7 +29,7 @@ test.describe('Mobile Navigation', () => {
     await expect(page.locator('nav')).toHaveClass(/active/);
     
     // Menu items should be visible
-    const legoPartsLink = page.locator('nav a[href="lego-parts.html"]');
+    const legoPartsLink = page.locator('nav a[href$="lego-parts.html"]');
     await expect(legoPartsLink).toBeVisible();
   });
 
@@ -40,7 +40,7 @@ test.describe('Mobile Navigation', () => {
     await hamburger.click();
     
     // Click a navigation link
-    const legoPartsLink = page.locator('nav a[href="lego-parts.html"]');
+    const legoPartsLink = page.locator('nav a[href$="lego-parts.html"]');
     await legoPartsLink.click();
     
     // Wait for navigation
@@ -71,7 +71,7 @@ test.describe('Mobile Navigation', () => {
     await hamburger.click();
     
     // Get the first button
-    const button = page.locator('nav ul li a.btn-stud').first();
+    const button = page.locator('nav ul a').first();
     const buttonBox = await button.boundingBox();
     const viewportWidth = page.viewportSize().width;
     
@@ -126,8 +126,8 @@ test.describe('Mobile Responsive Design', () => {
       };
     });
     
-    // Should have padding for fixed header and footer
+    // Fixed header needs top padding. The footer scrolls with the page.
     expect(parseInt(bodyStyles.paddingTop)).toBeGreaterThan(50);
-    expect(parseInt(bodyStyles.paddingBottom)).toBeGreaterThan(50);
+    expect(parseInt(bodyStyles.paddingBottom)).toBe(0);
   });
 });

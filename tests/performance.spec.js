@@ -1,5 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
+test.use({ viewport: { width: 1280, height: 720 } });
+
 test.describe('Performance', () => {
   test('should load home page quickly', async ({ page }) => {
     const startTime = Date.now();

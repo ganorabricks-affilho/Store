@@ -47,12 +47,11 @@
     margin-bottom: 10px;
 }
 
-/* Price display */
-.product-price {
-    font-size: 2rem;
-    color: var(--orange);
-    font-weight: bold;
-    margin-top: 20px;
+.ask-note {
+    margin-top: 16px;
+    font-size: 1.05rem;
+    color: #444;
+    max-width: 640px;
 }
 
 /* Main content grid layout */

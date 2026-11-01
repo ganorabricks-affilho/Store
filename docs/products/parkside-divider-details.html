@@ -17,27 +17,16 @@
     <title>Parkside Divider — Ganorabricks</title>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="../product-details.css">
-    <script src="../prices.js"></script>
 </head>
 <body>
 
-<!-- CUSTOM NAVBAR FOR PRODUCT PAGES -->
-<nav class="product-detail-nav">
-    <a href="javascript:history.back()" class="back-btn">
-        <span>←</span>
-        <span>Back</span>
-    </a>
-    <div style="display: flex; align-items: center; gap: 12px;">
-        <img src="../assets/ganorabricks-logo-full.png" alt="Ganorabricks Logo" style="width: 50px; height: 50px; object-fit: contain;">
-        <span style="font-size: 1.3rem; font-weight: bold;">Ganorabricks</span>
-    </div>
-</nav>
+<div id="navbar"></div>
 
 <!-- PRODUCT HEADER -->
 <div class="product-header">
     <h1>Parkside Divider</h1>
     <p style="font-size: 1.2rem; color: #666;">Dividers for Parkside storage bins, small size available.</p>
-    <div class="product-price" id="product-price">Loading price...</div>
+    <p class="ask-note">Email me if you want this print. I will reply with a price and shipping.</p>
 </div>
 
 <!-- PRODUCT CONTENT -->
@@ -87,10 +76,10 @@
         </div>
 
         <div class="cta-section">
-            <h3>Ready to Order?</h3>
-            <p style="margin-bottom: 20px;">Contact us to place your order or ask about custom configurations</p>
-            <a class="btn-stud" href="mailto:ganorabricks@icloud.com?subject=Order%20Parkside%20Divider" style="background: white; color: var(--orange); display: inline-block;">
-                Contact to Order
+            <h3>Interested?</h3>
+            <p style="margin-bottom: 20px;">Tell me the size, color, and how many you want. I will reply with a price and shipping.</p>
+            <a class="btn-stud btn-on-dark" href="mailto:ganorabricks@icloud.com?subject=Question%20about%20Parkside%20Divider">
+                Ask about this print
             </a>
         </div>
     </div>
@@ -106,10 +95,7 @@
 
 <script src="../script.js"></script>
 <script>
-// Load footer
-fetch('../footer.html')
-    .then(res => res.text())
-    .then(html => document.getElementById('footer').innerHTML = html);
+loadSiteChrome();
 
 // Image gallery functionality
 function changeImage(src) {
@@ -136,15 +122,6 @@ function closeModal() {
     document.getElementById('imageModal').classList.remove('active');
 }
 
-// Load price from centralized source
-window.addEventListener('load', async () => {
-    const productId = 'parkside-divider';
-    const price = await getPrice(productId);
-    const priceElement = document.getElementById('product-price');
-    if (priceElement) {
-        priceElement.textContent = price;
-    }
-});
 </script>
 </body>
 </html>

@@ -9,10 +9,10 @@ Visit [ganorabricks.com](https://ganorabricks.com)
 ## 📋 About
 
 Ganorabricks offers:
-- **Thousands of authentic LEGO® Parts and sets** - Available on BrickLink & BrickOwl
-- **3D-Printed stands & organizers** - For collectors and display builders
-- **Custom 3D print requests** - Unique solutions for your needs
-- **Pick a Brick Wall service** - For those without a nearby LEGO® store
+- **Thousands of authentic LEGO® parts and sets** on BrickLink and BrickOwl
+- **Photos of parts $10 and up** on this site, for a closer look
+- **3D-printed stands and organizers**, quoted by email
+- **Custom 3D print requests**
 
 ## 🛠️ Tech Stack
 
@@ -29,7 +29,7 @@ Store/
 │   ├── index.html          # Home page
 │   ├── lego-parts.html     # LEGO parts catalog
 │   ├── 3dprints.html       # 3D prints showcase
-│   ├── pab-service.html    # Pick a Brick service
+│   ├── part-highlights.html # Photos of parts $10 and up
 │   ├── navbar.html         # Reusable navigation
 │   ├── footer.html         # Reusable footer
 │   ├── style.css           # Global styles

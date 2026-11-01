@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    
-    <!-- Google tag (gtag.js) -->
+    <meta name="description" content="Ganorabricks sells LEGO parts on BrickLink and BrickOwl, shows photos of parts $10 and up, and makes 3D-printed display accessories to order.">
+    <title>Ganorabricks — LEGO® Parts & 3D Prints</title>
+    <link rel="stylesheet" href="style.css">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WQS0X98RMY"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -13,70 +13,56 @@
       gtag('js', new Date());
       gtag('config', 'G-WQS0X98RMY');
     </script>
-    
-    <title>Ganorabricks — LEGO® Parts & 3D Prints</title>
-    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- NAVBAR -->
 <div id="navbar"></div>
 
-<!-- HERO SECTION -->
 <header class="hero">
     <div class="hero-text">
-        <h1>Premium LEGO® Parts & Custom 3D Prints</h1>
-        <p>Shop high-quality LEGO® parts on BrickLink & BrickOwl, and explore unique 3D-printed stands, organizers, and display solutions.</p>
+        <h1>LEGO® parts, plus prints made for them</h1>
+        <p>The full parts inventory is on BrickLink and BrickOwl. This site is where you can look at higher-value parts and at 3D-printed stands, trays, and organizers.</p>
+        <div class="hero-buttons">
+            <a class="btn-stud" href="lego-parts.html">Shop parts</a>
+            <a class="btn-stud btn-orange" href="3dprints.html">See 3D prints</a>
+        </div>
     </div>
-
-
-<!-- WHAT I OFFER -->
-<section class="offer">
-    <h2 class="section-title">What I Offer</h2>
-    <ul>
-        <li><strong>Thousands of authentic LEGO® Parts and sets</strong> available across BrickLink & BrickOwl.</li>
-        <li><strong>3D-Printed stands & organizers</strong> for collectors and display builders.</li>
-        <li><strong>Custom 3D print requests</strong> welcome.</li>
-        <li><strong>Pick a Brick Wall service</strong> - for those that don't have a LEGO® store close by .</li>
-    </ul>
-</section>
-
+    <img src="assets/3d-prints/stand36-front-figs.jpg" alt="3D-printed stand holding rows of LEGO minifigures">
 </header>
 
+<section class="doors">
+    <h2 class="section-title">Start here</h2>
+    <div class="door-grid">
+        <article class="card door-card">
+            <h3>Shop the parts stores</h3>
+            <p>Thousands of new and used parts, sorted and ready to ship. Checkout happens on BrickLink or BrickOwl.</p>
+            <div class="card-actions">
+                <a class="btn-stud" href="https://store.bricklink.com/Ganorabricks#/shop" target="_blank" rel="noopener noreferrer">BrickLink</a>
+                <a class="btn-stud btn-orange" href="https://ganorabricks.brickowl.com/" target="_blank" rel="noopener noreferrer">BrickOwl</a>
+            </div>
+        </article>
+        <article class="card door-card">
+            <h3>3D printed accessories</h3>
+            <p>Stands, head trays, bin dividers, and a brick ruler. Printed to order. Email me if you want one and I will quote it.</p>
+            <div class="card-actions">
+                <a class="btn-stud" href="3dprints.html">See the catalog</a>
+            </div>
+        </article>
+        <article class="card door-card">
+            <h3>Parts $10 and up</h3>
+            <p>Photos of higher-value parts, posted here when they are available. Useful if you want a closer look before you buy.</p>
+            <div class="card-actions">
+                <a class="btn-stud" href="part-highlights.html">See part photos</a>
+            </div>
+        </article>
+    </div>
+</section>
 
-<!-- FOOTER -->
 <div id="footer"></div>
 
 <script src="script.js"></script>
 <script>
-fetch('navbar.html')
-    .then(res => res.text())
-    .then(html => {
-        document.getElementById('navbar').innerHTML = html;
-        // Initialize hamburger menu
-        initHamburgerMenu();
-        // Re-observe sections for fade-in animation after navbar loads
-        if (window.IntersectionObserver) {
-            document.querySelectorAll('section').forEach(section => {
-                section.classList.remove('section-visible');
-            });
-            const observerOptions = { threshold: 0.1 };
-            const sectionObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if(entry.isIntersecting){
-                        entry.target.classList.add('section-visible');
-                    }
-                });
-            }, observerOptions);
-            document.querySelectorAll('section').forEach(section => {
-                sectionObserver.observe(section);
-            });
-        }
-        // load footer after navbar
-        fetch('footer.html')
-            .then(res => res.text())
-            .then(html => document.getElementById('footer').innerHTML = html);
-    });
+loadSiteChrome();
 </script>
 </body>
 </html>
