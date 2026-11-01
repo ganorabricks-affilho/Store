@@ -69,13 +69,24 @@ def candidate_dbs(explicit: str | None) -> list[Path]:
     return found
 
 
+MAC_DB = Path("/Users/AIRTONLADEIRAFERREIRA/PROJECTS/LOTLEDGER/DATA/LOTLEDGER.DB")
+
+
 def find_db(explicit: str | None) -> Path:
     tried = candidate_dbs(explicit)
     for path in tried:
         if path.is_file():
             return path
     lines = "\n".join(f"  - {path}" for path in tried)
-    raise SystemExit(f"LotLedger database not found. Looked in:\n{lines}")
+    home = Path.home()
+    hint = ""
+    if str(home) == "/home/ubuntu" or not Path("/Users").is_dir():
+        hint = (
+            "\n\nThis is the cloud computer, so it cannot see the database on your Mac. "
+            "Open Terminal on the Mac, cd into the Store folder, and run:\n\n"
+            f"  python3 scripts/build_highlights.py --db \"{MAC_DB}\"\n"
+        )
+    raise SystemExit(f"LotLedger database not found. Looked in:\n{lines}{hint}")
 
 
 def load_lots(db_path: Path, min_milli: int) -> list[dict]:
