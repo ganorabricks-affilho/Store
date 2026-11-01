@@ -96,7 +96,15 @@ Run this in Terminal on your Mac, from the Store folder. The database is not on 
 python3 scripts/build_highlights.py --db "/Users/AIRTONLADEIRAFERREIRA/PROJECTS/LOTLEDGER/DATA/LOTLEDGER.DB"
 ```
 
-To take the photos on a phone connected to the same Wi-Fi as this Mac, leave this running and open the address it prints:
+To copy photos from a phone plugged into the Mac with a USB cable, unlock the phone and run:
+
+```bash
+python3 scripts/build_highlights.py usb
+```
+
+Take each picture in the phone's Camera app, then press Enter in Terminal. The command asks which part the photo belongs to and saves it under the next number for that lot. On an iPhone, tap Trust the first time. An Android phone also needs USB debugging and `adb` (`brew install android-platform-tools`).
+
+The Wi-Fi page is the other option. It does not open on the phone by itself. Leave this running and type the address it prints into the phone's browser. The phone has to be on the same Wi-Fi as the Mac.
 
 ```bash
 python3 scripts/build_highlights.py photos

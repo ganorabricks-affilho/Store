@@ -14,7 +14,11 @@ on the next build. Existing photos are left in place when a price changes.
 
     python3 scripts/build_highlights.py
     python3 scripts/build_highlights.py --db ~/Projects/Lotledger/data/lotledger.db
+    python3 scripts/build_highlights.py usb
     python3 scripts/build_highlights.py photos
+
+`usb` copies pictures from a phone plugged into this Mac. Take the photo in
+the phone's Camera app, then press Enter in Terminal.
 
 `photos` serves a page on your Wi-Fi so a phone on the same network can take
 a picture and save it under the next number for that lot.
@@ -409,7 +413,8 @@ def sync(db_path: Path, min_milli: int, assume_delete: bool | None) -> dict:
     print(f"Open this file: {SITE / 'part-highlights.html'}")
     print(f"Photo folder: {PHOTO_DIR}")
     print("Name files {lot id}_1.jpg, {lot id}_2.jpg, and so on.")
-    print("From your phone, on the same Wi-Fi: python3 scripts/build_highlights.py photos")
+    print("Phone plugged into this Mac: python3 scripts/build_highlights.py usb")
+    print("Phone on the same Wi-Fi: python3 scripts/build_highlights.py photos")
     return {"count": len(final), "removed": len(removed) if do_delete else 0, "kept_removed": 0 if do_delete else len(removed)}
 
 
@@ -505,7 +510,9 @@ def serve_photos(port: int) -> None:
     ip = lan_ip()
     print(f"Photo drop is running.")
     print(f"On this Mac: http://127.0.0.1:{port}")
-    print(f"On your phone, same Wi-Fi: http://{ip}:{port}")
+    print(f"On your phone, same Wi-Fi, type this address into Safari or Chrome: http://{ip}:{port}")
+    print("The phone will not open it by itself. It has to be on the same Wi-Fi, not on cellular.")
+    print("If that page never loads, plug the phone into this Mac and run: python3 scripts/build_highlights.py usb")
     print("Leave this running while you take pictures. Ctrl-C stops it.")
     print("After you finish, run the build again so the website picks up the new files.")
     try:
@@ -631,12 +638,15 @@ def lot_capture_page(lot: dict) -> str:
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build the Parts $10+ pages from LotLedger.")
-    parser.add_argument("command", nargs="?", choices=("build", "photos"), default="build")
+    parser.add_argument("command", nargs="?", choices=("build", "photos", "usb"), default="build")
     parser.add_argument("--db", help="Path to lotledger.db. Defaults to the usual LotLedger data folder.")
     parser.add_argument("--min", type=float, default=MIN_DOLLARS, help="Minimum unit price in dollars (default 10).")
     parser.add_argument("--yes", action="store_true", help="Delete listings and photos for lots that dropped off the list.")
     parser.add_argument("--keep", action="store_true", help="Keep listings and photos for lots that dropped off the list.")
     parser.add_argument("--port", type=int, default=8787, help="Port for the phone photo page.")
+    parser.add_argument("--lot", help="BrickLink inventory id for a USB photo copy, such as 541734691.")
+    parser.add_argument("--newest", type=int, help="Copy this many newest phone photos without asking.")
+    parser.add_argument("--pick", help="USB photo numbers to copy, such as 1,2.")
     return parser.parse_args(argv)
 
 
@@ -646,6 +656,11 @@ def main(argv: list[str] | None = None) -> None:
         raise SystemExit("Pass only one of --yes or --keep.")
     if args.command == "photos":
         serve_photos(args.port)
+        return
+    if args.command == "usb":
+        from phone_usb import import_from_usb
+
+        import_from_usb(args.lot, args.newest, args.pick)
         return
     db_path = find_db(args.db)
     print(f"Reading {db_path}")
