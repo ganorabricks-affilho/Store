@@ -102,7 +102,7 @@ To take the photos on a phone connected to the same Wi-Fi as this Mac, leave thi
 python3 scripts/build_highlights.py photos
 ```
 
-BrickLink links open that inventory lot. LotLedger does not store a BrickOwl lot id, so the BrickOwl link searches your store by item number.
+BrickLink links open that inventory lot in the buyer shop. BrickOwl links open https://ganorabricks.brickowl.com/.
 
 ## 🧪 Testing
 

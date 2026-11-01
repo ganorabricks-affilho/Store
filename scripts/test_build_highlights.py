@@ -86,7 +86,7 @@ class SyncTests(unittest.TestCase):
             by_id["15"]["bricklink_url"],
             "https://store.bricklink.com/Ganorabricks?p=Ganorabricks&itemID=15#/shop",
         )
-        self.assertIn("query=3001", by_id["15"]["brickowl_url"])
+        self.assertEqual(by_id["15"]["brickowl_url"], "https://ganorabricks.brickowl.com/")
         page = (highlights.PAGE_DIR / "15.html").read_text()
         self.assertIn("../assets/parts/highlights/15_1.jpg", page)
         self.assertIn("../assets/parts/highlights/15_2.PNG", page)

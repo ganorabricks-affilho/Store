@@ -143,12 +143,7 @@ def lot_record(row: sqlite3.Row) -> dict:
         "bricklink_url": (
             f"https://store.bricklink.com/{STORE}?p={STORE}&itemID={quote(lot_id)}#/shop"
         ),
-        "brickowl_url": (
-            "https://www.brickowl.com/search/catalog?query="
-            f"{quote(item_no)}&seller={STORE}"
-            if item_no
-            else f"https://{STORE.lower()}.brickowl.com/"
-        ),
+        "brickowl_url": "https://ganorabricks.brickowl.com/",
         "photos": [],
         "photo_page": f"highlights/{lot_id}.html",
     }
