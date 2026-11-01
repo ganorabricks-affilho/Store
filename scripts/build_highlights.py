@@ -140,7 +140,9 @@ def lot_record(row: sqlite3.Row) -> dict:
         "price": money3(millis),
         "description": (row["description"] or "").strip(),
         "remarks": (row["remarks"] or "").strip(),
-        "bricklink_url": f"https://www.bricklink.com/inventory_detail.asp?invID={quote(lot_id)}",
+        "bricklink_url": (
+            f"https://store.bricklink.com/{STORE}?p={STORE}&itemID={quote(lot_id)}#/shop"
+        ),
         "brickowl_url": (
             "https://www.brickowl.com/search/catalog?query="
             f"{quote(item_no)}&seller={STORE}"
