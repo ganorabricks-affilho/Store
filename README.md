@@ -77,6 +77,31 @@ python3 -m http.server 8080
 # Visit http://localhost:8080
 ```
 
+## Parts $10+ from LotLedger
+
+The parts page is built from the BrickLink inventory already stored in LotLedger (`store_inventory`). A lot is included when it is for sale, still in stock, and the unit price is $10.000 or more.
+
+Photos live in `docs/assets/parts/highlights`. Name them with the BrickLink inventory id:
+
+```text
+12345678_1.jpg
+12345678_2.jpg
+```
+
+The number goes up for each extra photo. On the next build, an existing lot keeps its photos and gets a new price. A new lot is added. A lot that is no longer on the list is removed, along with its photos, only after you confirm.
+
+```bash
+python3 scripts/build_highlights.py --db ~/Projects/Lotledger/data/lotledger.db
+```
+
+To take the photos on a phone connected to the same Wi-Fi as this Mac, leave this running and open the address it prints:
+
+```bash
+python3 scripts/build_highlights.py photos
+```
+
+BrickLink links open that inventory lot. LotLedger does not store a BrickOwl lot id, so the BrickOwl link searches your store by item number.
+
 ## 🧪 Testing
 
 ```bash

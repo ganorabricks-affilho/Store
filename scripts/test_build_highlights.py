@@ -1,0 +1,127 @@
+#!/usr/bin/env python3
+"""Logic tests for the Parts $10+ builder. Uses a temporary database and site."""
+
+import sqlite3
+import tempfile
+import unittest
+from pathlib import Path
+
+import build_highlights as highlights
+
+
+SCHEMA = """
+CREATE TABLE store_inventory (
+    bl_inventory_id TEXT PRIMARY KEY,
+    item_no TEXT NOT NULL DEFAULT '',
+    item_name TEXT NOT NULL DEFAULT '',
+    color_name TEXT NOT NULL DEFAULT '',
+    new_or_used TEXT NOT NULL DEFAULT '',
+    quantity INTEGER NOT NULL DEFAULT 0,
+    unit_price_milli INTEGER NOT NULL DEFAULT 0,
+    description TEXT NOT NULL DEFAULT '',
+    remarks TEXT NOT NULL DEFAULT '',
+    is_retain INTEGER NOT NULL DEFAULT 0,
+    is_stock_room INTEGER NOT NULL DEFAULT 0
+);
+"""
+
+
+def seed(db_path: Path, rows):
+    conn = sqlite3.connect(db_path)
+    conn.executescript(SCHEMA)
+    conn.executemany(
+        """
+        INSERT INTO store_inventory (
+            bl_inventory_id, item_no, item_name, color_name, new_or_used,
+            quantity, unit_price_milli, is_retain, is_stock_room
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        rows,
+    )
+    conn.commit()
+    conn.close()
+
+
+class SyncTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        root = Path(self.tmp.name)
+        self.db = root / "lotledger.db"
+        self.site = root / "docs"
+        self.photos = self.site / "assets" / "parts" / "highlights"
+        self.photos.mkdir(parents=True)
+        (self.photos / "15_1.jpg").write_bytes(b"one")
+        (self.photos / "15_2.PNG").write_bytes(b"two")
+        (self.photos / "20_1.jpg").write_bytes(b"twenty")
+        highlights.SITE = self.site
+        highlights.PHOTO_DIR = self.photos
+        highlights.DATA_PATH = self.site / "highlights.json"
+        highlights.PAGE_DIR = self.site / "highlights"
+        seed(
+            self.db,
+            [
+                ("15", "3001", "Brick 2 x 4", "Black", "U", 2, 15000, 0, 0),
+                ("9", "3024", "Plate 1 x 1", "Red", "N", 4, 9000, 0, 0),
+                ("20", "3069", "Tile 1 x 2", "White", "N", 1, 20000, 0, 0),
+                ("7", "3001", "Brick 2 x 4", "Blue", "U", 1, 12000, 1, 0),
+                ("8", "3001", "Brick 2 x 4", "Tan", "U", 1, 12000, 0, 1),
+            ],
+        )
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def test_first_build_keeps_only_ten_dollar_for_sale_lots_and_their_photos(self):
+        report = highlights.sync(self.db, 10000, False)
+        self.assertEqual(report["count"], 2)
+        data = highlights.load_previous(highlights.DATA_PATH)
+        by_id = {item["id"]: item for item in data}
+        self.assertEqual(set(by_id), {"15", "20"})
+        self.assertEqual(by_id["15"]["price"], "$15.000")
+        self.assertEqual(
+            by_id["15"]["photos"],
+            ["assets/parts/highlights/15_1.jpg", "assets/parts/highlights/15_2.PNG"],
+        )
+        self.assertIn("invID=15", by_id["15"]["bricklink_url"])
+        self.assertIn("query=3001", by_id["15"]["brickowl_url"])
+        page = (highlights.PAGE_DIR / "15.html").read_text()
+        self.assertIn("/assets/parts/highlights/15_1.jpg", page)
+        self.assertIn("/assets/parts/highlights/15_2.PNG", page)
+        self.assertNotIn("Plate 1 x 1", (highlights.DATA_PATH).read_text())
+
+    def test_price_update_keeps_photos_and_removal_waits_for_yes(self):
+        highlights.sync(self.db, 10000, False)
+        conn = sqlite3.connect(self.db)
+        conn.execute("UPDATE store_inventory SET unit_price_milli = 18000 WHERE bl_inventory_id = '15'")
+        conn.execute("DELETE FROM store_inventory WHERE bl_inventory_id = '20'")
+        conn.execute(
+            """
+            INSERT INTO store_inventory (
+                bl_inventory_id, item_no, item_name, color_name, new_or_used,
+                quantity, unit_price_milli
+            ) VALUES ('30', '4073', 'Plate 1 x 1 Round', 'Yellow', 'U', 1, 11000)
+            """
+        )
+        conn.commit()
+        conn.close()
+
+        kept = highlights.sync(self.db, 10000, False)
+        self.assertEqual(kept["removed"], 0)
+        data = {item["id"]: item for item in highlights.load_previous(highlights.DATA_PATH)}
+        self.assertEqual(data["15"]["price"], "$18.000")
+        self.assertEqual(len(data["15"]["photos"]), 2)
+        self.assertIn("20", data)
+        self.assertTrue((self.photos / "20_1.jpg").is_file())
+        self.assertIn("30", data)
+
+        deleted = highlights.sync(self.db, 10000, True)
+        self.assertEqual(deleted["removed"], 1)
+        data = {item["id"]: item for item in highlights.load_previous(highlights.DATA_PATH)}
+        self.assertNotIn("20", data)
+        self.assertFalse((self.photos / "20_1.jpg").exists())
+        self.assertFalse((highlights.PAGE_DIR / "20.html").exists())
+        self.assertTrue((self.photos / "15_1.jpg").is_file())
+
+
+if __name__ == "__main__":
+    unittest.main()

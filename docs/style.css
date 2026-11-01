@@ -278,6 +278,37 @@ section {
     border-radius: 10px;
 }
 
+.photo-placeholder {
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--light);
+    border-radius: 10px;
+    color: var(--blue-dark);
+    font-weight: 700;
+    margin-bottom: 14px;
+}
+
+.highlight-price {
+    margin-top: 8px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--orange-dark);
+}
+
+.lot-photos {
+    display: grid;
+    gap: 16px;
+}
+
+.lot-photos img {
+    width: 100%;
+    height: auto;
+    background: white;
+    border-radius: 12px;
+}
+
 .store-list {
     display: grid;
     gap: 16px;

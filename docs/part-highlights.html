@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Photos of Ganorabricks LEGO parts priced at $10 and up. Email if you want one you see here.">
+    <meta name="description" content="Ganorabricks LEGO parts listed at $10 and up, with photos and links to the BrickLink and BrickOwl lots.">
     <title>Ganorabricks — Parts $10+</title>
     <link rel="stylesheet" href="style.css">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WQS0X98RMY"></script>
@@ -20,7 +20,7 @@
 
 <section class="page-intro">
     <h1 class="section-title">Parts $10 and up</h1>
-    <p>These are photos of higher-value parts, so you can see condition and color before you ask. Nothing on this page is a checkout. If you want one, email me and I will tell you whether it is still available.</p>
+    <p>These are the for-sale lots at $10 and up. The price is the BrickLink price. Open the lot on BrickLink or BrickOwl to buy it, or look at the photos here first.</p>
     <p>Everything else is in the stores: <a class="text-link" href="https://store.bricklink.com/Ganorabricks#/shop" target="_blank" rel="noopener noreferrer">BrickLink</a> and <a class="text-link" href="https://ganorabricks.brickowl.com/" target="_blank" rel="noopener noreferrer">BrickOwl</a>.</p>
 </section>
 
@@ -33,13 +33,13 @@
 
 <script src="script.js"></script>
 <script>
-// To add a part: save the photo in docs/assets/parts/, then add a line below.
-// image: path from this page, title: what the buyer should see, note: color or condition (optional).
-const expensiveParts = [
-    // { image: "assets/parts/example.jpg", title: "Black torso, red arms", note: "Used, excellent" },
-];
-
-renderHighlights("highlights", expensiveParts);
+fetch("highlights.json")
+    .then(response => {
+        if (!response.ok) throw new Error("missing highlights");
+        return response.json();
+    })
+    .then(data => renderHighlights("highlights", data.items || []))
+    .catch(() => renderHighlights("highlights", []));
 loadSiteChrome();
 </script>
 </body>
