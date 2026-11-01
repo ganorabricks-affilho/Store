@@ -26,20 +26,20 @@
 
 <section>
     <h2 class="section-title">Photo highlights</h2>
-    <div id="highlights"></div>
+    <div id="highlights">
+<!-- highlights:start -->
+        <div class="empty-gallery">
+            <p class="empty-title">Photos coming soon</p>
+            <p>When a part is worth a closer look, its photo will show up here. The full inventory stays on BrickLink and BrickOwl.</p>
+        </div>
+<!-- highlights:end -->
+    </div>
 </section>
 
 <div id="footer"></div>
 
 <script src="script.js"></script>
 <script>
-fetch("highlights.json")
-    .then(response => {
-        if (!response.ok) throw new Error("missing highlights");
-        return response.json();
-    })
-    .then(data => renderHighlights("highlights", data.items || []))
-    .catch(() => renderHighlights("highlights", []));
 loadSiteChrome();
 </script>
 </body>

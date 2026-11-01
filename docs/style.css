@@ -309,6 +309,60 @@ section {
     border-radius: 12px;
 }
 
+.highlight-list {
+    list-style: none;
+    display: grid;
+    gap: 12px;
+}
+
+.highlight-row {
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr) auto auto;
+    gap: 16px;
+    align-items: center;
+    background: white;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border-bottom: 6px solid var(--orange);
+}
+
+.highlight-thumb {
+    width: 88px;
+    height: 88px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--light);
+    border-radius: 8px;
+    color: var(--blue-dark);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.highlight-thumb img {
+    width: 88px;
+    height: 88px;
+    object-fit: contain;
+}
+
+.highlight-title {
+    color: var(--blue-dark);
+    font-weight: 700;
+    font-size: 1.05rem;
+}
+
+.highlight-links {
+    margin-top: 4px;
+}
+
+.highlight-links a {
+    color: var(--blue-dark);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    margin-right: 12px;
+}
+
 .store-list {
     display: grid;
     gap: 16px;
@@ -450,6 +504,15 @@ footer a {
     .store-card {
         grid-template-columns: 1fr;
         justify-items: start;
+    }
+
+    .highlight-row {
+        grid-template-columns: 72px minmax(0, 1fr);
+    }
+
+    .highlight-row .highlight-price,
+    .highlight-row .btn-stud {
+        grid-column: 2;
     }
 
     .door-grid,

@@ -228,6 +228,70 @@ def delete_lot_files(lot_id: str, photo_dir: Path, page_dir: Path) -> None:
         print(f"  deleted {page.relative_to(SITE)}")
 
 
+LIST_START = "<!-- highlights:start -->"
+LIST_END = "<!-- highlights:end -->"
+
+
+def render_lot_list(lots: list[dict]) -> str:
+    if not lots:
+        return """<div class="empty-gallery">
+            <p class="empty-title">Photos coming soon</p>
+            <p>When a part is worth a closer look, its photo will show up here. The full inventory stays on BrickLink and BrickOwl.</p>
+        </div>"""
+    rows = []
+    for lot in lots:
+        count = len(lot.get("photos") or [])
+        if count == 0:
+            photo_label = "See photos"
+        elif count == 1:
+            photo_label = "See photos (1)"
+        else:
+            photo_label = f"See photos ({count})"
+        meta = " · ".join(
+            bit for bit in (lot.get("item_no"), lot.get("condition"), f"qty {lot.get('qty', 0)}") if bit
+        )
+        page = html_escape(lot["photo_page"])
+        title = html_escape(lot["title"])
+        if lot.get("photos"):
+            thumb = (
+                f'<a class="highlight-thumb" href="{page}">'
+                f'<img src="{html_escape(lot["photos"][0])}" alt=""></a>'
+            )
+        else:
+            thumb = f'<a class="highlight-thumb" href="{page}">No photo</a>'
+        rows.append(
+            f"""<li class="highlight-row">
+            {thumb}
+            <div class="highlight-main">
+                <a class="highlight-title" href="{page}">{title}</a>
+                <p class="card-copy">{html_escape(meta)}</p>
+                <p class="highlight-links">
+                    <a href="{html_escape(lot['bricklink_url'])}" target="_blank" rel="noopener noreferrer">BrickLink</a>
+                    <a href="{html_escape(lot['brickowl_url'])}" target="_blank" rel="noopener noreferrer">BrickOwl</a>
+                </p>
+            </div>
+            <p class="highlight-price">{html_escape(lot.get('price', ''))}</p>
+            <a class="btn-stud" href="{page}">{photo_label}</a>
+        </li>"""
+        )
+    return '<ul class="highlight-list">\n' + "\n".join(rows) + "\n</ul>"
+
+
+def write_highlights_page(lots: list[dict]) -> None:
+    block = render_lot_list(lots)
+    page = SITE / "part-highlights.html"
+    if page.is_file() and LIST_START in page.read_text() and LIST_END in page.read_text():
+        text = page.read_text()
+        pre, rest = text.split(LIST_START, 1)
+        _, post = rest.split(LIST_END, 1)
+        page.write_text(f"{pre}{LIST_START}\n{block}\n{LIST_END}{post}")
+        return
+    page.write_text(
+        "<!DOCTYPE html>\n<html><body>\n"
+        f"{LIST_START}\n{block}\n{LIST_END}\n</body></html>\n"
+    )
+
+
 def write_site(lots: list[dict], min_milli: int) -> None:
     PHOTO_DIR.mkdir(parents=True, exist_ok=True)
     PAGE_DIR.mkdir(parents=True, exist_ok=True)
@@ -238,6 +302,7 @@ def write_site(lots: list[dict], min_milli: int) -> None:
         "items": lots,
     }
     DATA_PATH.write_text(json.dumps(payload, indent=2) + "\n")
+    write_highlights_page(lots)
     current_ids = {lot["id"] for lot in lots}
     for lot in lots:
         (PAGE_DIR / f"{lot['id']}.html").write_text(photo_page(lot))
@@ -252,7 +317,7 @@ def photo_page(lot: dict) -> str:
     bits = [bit for bit in (lot.get("item_no"), lot.get("condition"), f"qty {lot.get('qty', 0)}") if bit]
     meta = html_escape(" · ".join(bits))
     images = "\n".join(
-        f'        <img src="/{html_escape(src)}" alt="{title}">'
+        f'        <img src="../{html_escape(src)}" alt="{title}">'
         for src in lot.get("photos") or []
     )
     if not images:
@@ -271,12 +336,12 @@ def photo_page(lot: dict) -> str:
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{title} — Ganorabricks</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="../style.css">
 </head>
 <body>
 <div id="navbar"></div>
 <section class="page-intro">
-    <p><a class="text-link" href="/part-highlights.html">Parts $10+</a></p>
+    <p><a class="text-link" href="../part-highlights.html">Parts $10+</a></p>
     <h1 class="section-title">{title}</h1>
     <p>{meta}</p>
     <p class="highlight-price">{html_escape(lot.get("price", ""))}</p>
@@ -293,7 +358,7 @@ def photo_page(lot: dict) -> str:
     </div>
 </section>
 <div id="footer"></div>
-<script src="/script.js"></script>
+<script src="../script.js"></script>
 <script>loadSiteChrome();</script>
 </body>
 </html>
@@ -341,7 +406,11 @@ def sync(db_path: Path, min_milli: int, assume_delete: bool | None) -> dict:
     missing = len(final) - with_photos
     print(f"Published {len(final)} lots at {money3(min_milli)} and up.")
     print(f"Photos: {with_photos} with pictures, {missing} without.")
-    print(f"Folder: {PHOTO_DIR}")
+    for lot in final:
+        count = len(lot.get("photos") or [])
+        print(f"  {lot.get('price', ''):>10}  {lot.get('title', '')}  ->  {lot['photo_page']} ({count})")
+    print(f"Open this file: {SITE / 'part-highlights.html'}")
+    print(f"Photo folder: {PHOTO_DIR}")
     print("Name files {lot id}_1.jpg, {lot id}_2.jpg, and so on.")
     print("From your phone, on the same Wi-Fi: python3 scripts/build_highlights.py photos")
     return {"count": len(final), "removed": len(removed) if do_delete else 0, "kept_removed": 0 if do_delete else len(removed)}

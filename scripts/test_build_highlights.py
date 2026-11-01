@@ -85,9 +85,13 @@ class SyncTests(unittest.TestCase):
         self.assertIn("invID=15", by_id["15"]["bricklink_url"])
         self.assertIn("query=3001", by_id["15"]["brickowl_url"])
         page = (highlights.PAGE_DIR / "15.html").read_text()
-        self.assertIn("/assets/parts/highlights/15_1.jpg", page)
-        self.assertIn("/assets/parts/highlights/15_2.PNG", page)
-        self.assertNotIn("Plate 1 x 1", (highlights.DATA_PATH).read_text())
+        self.assertIn("../assets/parts/highlights/15_1.jpg", page)
+        self.assertIn("../assets/parts/highlights/15_2.PNG", page)
+        listing = (highlights.SITE / "part-highlights.html").read_text()
+        self.assertIn('href="highlights/15.html"', listing)
+        self.assertIn("See photos (2)", listing)
+        self.assertIn("Black Brick 2 x 4", listing)
+        self.assertNotIn("Plate 1 x 1", listing)
 
     def test_price_update_keeps_photos_and_removal_waits_for_yes(self):
         highlights.sync(self.db, 10000, False)

@@ -28,14 +28,20 @@ function initHamburgerMenu() {
     });
 }
 
+function sitePrefix() {
+    const path = window.location.pathname.replace(/\\/g, "/");
+    return path.includes("/highlights/") ? "../" : "";
+}
+
 function loadSiteChrome() {
     const jobs = [];
     const navEl = document.getElementById("navbar");
     const footerEl = document.getElementById("footer");
+    const prefix = sitePrefix();
 
     if (navEl) {
         jobs.push(
-            fetch("/navbar.html")
+            fetch(prefix + "navbar.html")
                 .then(res => res.text())
                 .then(html => {
                     navEl.innerHTML = html;
@@ -46,7 +52,7 @@ function loadSiteChrome() {
 
     if (footerEl) {
         jobs.push(
-            fetch("/footer.html")
+            fetch(prefix + "footer.html")
                 .then(res => res.text())
                 .then(html => {
                     footerEl.innerHTML = html;
