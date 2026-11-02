@@ -101,10 +101,12 @@ def load_lots(db_path: Path, min_milli: int) -> list[dict]:
         raise SystemExit(f"Could not open {db_path}: {exc}") from exc
     conn.row_factory = sqlite3.Row
     try:
+        columns = {row[1] for row in conn.execute("PRAGMA table_info(store_inventory)")}
+        image_select = "image_url" if "image_url" in columns else "'' AS image_url"
         rows = conn.execute(
-            """
+            f"""
             SELECT bl_inventory_id, item_no, item_name, color_name, new_or_used,
-                   quantity, unit_price_milli, description, remarks
+                   quantity, unit_price_milli, description, remarks, {image_select}
             FROM store_inventory
             WHERE is_stock_room = 0
               AND is_retain = 0
@@ -144,6 +146,7 @@ def lot_record(row: sqlite3.Row) -> dict:
         "price": money3(millis),
         "description": (row["description"] or "").strip(),
         "remarks": (row["remarks"] or "").strip(),
+        "image_url": (row["image_url"] or "").strip() if "image_url" in row.keys() else "",
         "bricklink_url": (
             f"https://store.bricklink.com/{STORE}?p={STORE}&itemID={quote(lot_id)}#/shop"
         ),
@@ -233,6 +236,15 @@ LIST_START = "<!-- highlights:start -->"
 LIST_END = "<!-- highlights:end -->"
 
 
+def list_thumb_src(lot: dict) -> str:
+    """Prefer the catalog image stored in LotLedger. Local photos are the fallback."""
+    url = (lot.get("image_url") or "").strip()
+    if url.startswith(("https://", "http://")):
+        return url
+    photos = lot.get("photos") or []
+    return photos[0] if photos else ""
+
+
 def render_lot_list(lots: list[dict]) -> str:
     if not lots:
         return """<div class="empty-gallery">
@@ -253,10 +265,12 @@ def render_lot_list(lots: list[dict]) -> str:
         )
         page = html_escape(lot["photo_page"])
         title = html_escape(lot["title"])
-        if lot.get("photos"):
+        thumb_src = list_thumb_src(lot)
+        if thumb_src:
             thumb = (
                 f'<a class="highlight-thumb" href="{page}">'
-                f'<img src="{html_escape(lot["photos"][0])}" alt=""></a>'
+                f'<img src="{html_escape(thumb_src)}" alt="{title}" '
+                f'referrerpolicy="no-referrer" loading="lazy"></a>'
             )
         else:
             thumb = f'<a class="highlight-thumb" href="{page}">No photo</a>'

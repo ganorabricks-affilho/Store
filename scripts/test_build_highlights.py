@@ -20,6 +20,7 @@ CREATE TABLE store_inventory (
     unit_price_milli INTEGER NOT NULL DEFAULT 0,
     description TEXT NOT NULL DEFAULT '',
     remarks TEXT NOT NULL DEFAULT '',
+    image_url TEXT NOT NULL DEFAULT '',
     is_retain INTEGER NOT NULL DEFAULT 0,
     is_stock_room INTEGER NOT NULL DEFAULT 0
 );
@@ -95,6 +96,31 @@ class SyncTests(unittest.TestCase):
         self.assertIn("See photos (2)", listing)
         self.assertIn("Black Brick 2 x 4", listing)
         self.assertNotIn("Plate 1 x 1", listing)
+        self.assertEqual(by_id["15"]["image_url"], "")
+        self.assertIn('src="assets/parts/highlights/15_1.jpg"', listing)
+
+    def test_list_thumbnail_uses_the_database_image_url(self):
+        conn = sqlite3.connect(self.db)
+        conn.execute(
+            "UPDATE store_inventory SET image_url = ? WHERE bl_inventory_id = '15'",
+            ("https://img.bricklink.com/ItemImage/PN/11/3001.png",),
+        )
+        conn.execute(
+            "UPDATE store_inventory SET image_url = ? WHERE bl_inventory_id = '20'",
+            ("javascript:alert(1)",),
+        )
+        conn.commit()
+        conn.close()
+        highlights.sync(self.db, 10000, False)
+        listing = (highlights.SITE / "part-highlights.html").read_text()
+        self.assertIn(
+            'src="https://img.bricklink.com/ItemImage/PN/11/3001.png"',
+            listing,
+        )
+        self.assertIn('referrerpolicy="no-referrer"', listing)
+        self.assertNotIn("15_1.jpg", listing)
+        self.assertIn('src="assets/parts/highlights/20_1.jpg"', listing)
+        self.assertNotIn("javascript:", listing)
 
     def test_price_update_keeps_photos_and_removal_waits_for_yes(self):
         highlights.sync(self.db, 10000, False)
