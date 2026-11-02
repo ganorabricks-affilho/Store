@@ -16,12 +16,17 @@ on the next build. Existing photos are left in place when a price changes.
     python3 scripts/build_highlights.py --db ~/Projects/Lotledger/data/lotledger.db
     python3 scripts/build_highlights.py usb
     python3 scripts/build_highlights.py photos
+    python3 scripts/build_highlights.py clean --lot 541734691
 
 `usb` copies pictures from a phone plugged into this Mac. Take the photo in
 the phone's Camera app, then press Enter in Terminal.
 
 `photos` serves a page on your Wi-Fi so a phone on the same network can take
-a picture and save it under the next number for that lot.
+a picture and save it under the next number for that lot. Each saved photo
+is added to the Parts $10+ pages, the same way a USB copy is.
+
+`clean --lot` deletes every photo for that BrickLink lot id and takes those
+pictures off the Parts $10+ pages. The listing itself stays.
 """
 
 from __future__ import annotations
@@ -222,6 +227,50 @@ def confirm_removal(removed: list[dict], photo_dir: Path, assume: bool | None) -
     return answer in {"y", "yes"}
 
 
+def clear_lot_photos(lot_id: str, photo_dir: Path | None = None) -> list[Path]:
+    """Delete every photo file for one BrickLink lot id. The listing stays."""
+    lot_id = str(lot_id or "").strip()
+    if not re.fullmatch(r"\d+", lot_id):
+        raise SystemExit("Pass a lot id made of digits, such as 541734691.")
+    folder = PHOTO_DIR if photo_dir is None else photo_dir
+    files = photo_files(folder, lot_id)
+    for path in files:
+        path.unlink()
+        print(f"  deleted {path.name}")
+    if files:
+        noun = "photo" if len(files) == 1 else "photos"
+        print(f"Deleted {len(files)} {noun} for lot {lot_id}.")
+    else:
+        print(f"No photos for lot {lot_id}.")
+    drop_photos_from_site(lot_id)
+    return files
+
+
+def drop_photos_from_site(lot_id: str) -> None:
+    """Clear that lot's photo list on the published pages, when the lot is listed."""
+    if not DATA_PATH.is_file():
+        return
+    try:
+        payload = json.loads(DATA_PATH.read_text())
+    except json.JSONDecodeError:
+        return
+    items = payload.get("items") if isinstance(payload, dict) else None
+    if not isinstance(items, list):
+        return
+    found = False
+    for lot in items:
+        if not isinstance(lot, dict) or str(lot.get("id")) != lot_id:
+            continue
+        lot["photos"] = []
+        PAGE_DIR.mkdir(parents=True, exist_ok=True)
+        (PAGE_DIR / f"{lot_id}.html").write_text(photo_page(lot))
+        found = True
+    if not found:
+        return
+    DATA_PATH.write_text(json.dumps(payload, indent=2) + "\n")
+    write_highlights_page(items)
+
+
 def delete_lot_files(lot_id: str, photo_dir: Path, page_dir: Path) -> None:
     for path in photo_files(photo_dir, lot_id):
         path.unlink()
@@ -317,6 +366,36 @@ def write_highlights_page(lots: list[dict]) -> None:
         "<!DOCTYPE html>\n<html><body>\n"
         f"{LIST_START}\n{block}\n{LIST_END}\n</body></html>\n"
     )
+
+
+def refresh_photo_pages() -> None:
+    """Rebuild the Parts $10+ pages from the photo files already on disk."""
+    lots = load_previous(DATA_PATH)
+    if not lots:
+        print("Photo saved. Run the build once so the Parts $10+ page exists.")
+        return
+    attach_photos(lots, PHOTO_DIR)
+    min_milli = MIN_DOLLARS * 1000
+    try:
+        payload = json.loads(DATA_PATH.read_text())
+        min_milli = int(payload.get("min_milli") or min_milli)
+    except (OSError, ValueError, TypeError):
+        pass
+    write_site(lots, min_milli)
+    print("Updated the Parts $10+ pages.")
+
+
+def save_lot_photo(lot_id: str, data: bytes, filename: str) -> Path:
+    """Save one uploaded photo for a lot and publish it on the site."""
+    ext = Path(filename).suffix.lower()
+    if ext not in PHOTO_EXTS:
+        ext = ".jpg"
+    PHOTO_DIR.mkdir(parents=True, exist_ok=True)
+    dest = PHOTO_DIR / f"{lot_id}_{next_photo_index(lot_id)}{ext}"
+    dest.write_bytes(data)
+    print(f"Saved {dest.name}")
+    refresh_photo_pages()
+    return dest
 
 
 def write_site(lots: list[dict], min_milli: int) -> None:
@@ -512,13 +591,8 @@ def serve_photos(port: int) -> None:
             if length <= 0 or length > MAX_UPLOAD:
                 return self._send(400, "text/plain", b"Photo is empty or larger than 20 MB")
             raw_name = self.headers.get("X-Filename") or "photo.jpg"
-            ext = Path(raw_name).suffix.lower()
-            if ext not in PHOTO_EXTS:
-                ext = ".jpg"
             data = self.rfile.read(length)
-            dest = PHOTO_DIR / f"{lot_id}_{next_photo_index(lot_id)}{ext}"
-            dest.write_bytes(data)
-            print(f"Saved {dest.name}")
+            dest = save_lot_photo(lot_id, data, raw_name)
             body = json.dumps({"file": dest.name}).encode()
             self._send(200, "application/json", body)
 
@@ -537,13 +611,27 @@ def serve_photos(port: int) -> None:
     print("The phone will not open it by itself. It has to be on the same Wi-Fi, not on cellular.")
     print("If that page never loads, plug the phone into this Mac and run: python3 scripts/build_highlights.py usb")
     print("Leave this running while you take pictures. Ctrl-C stops it.")
-    print("After you finish, run the build again so the website picks up the new files.")
+    print("Each saved photo is added to the Parts $10+ pages right away.")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
         print("\nStopped.")
     finally:
         server.server_close()
+
+
+def capture_thumb(lot: dict) -> str:
+    """Same picture the parts list uses: the catalog image, or a saved photo."""
+    src = list_thumb_src(lot)
+    if not src:
+        return '<span class="thumb empty">No photo</span>'
+    if not src.startswith(("https://", "http://")):
+        src = "/file/" + quote(src.rsplit("/", 1)[-1])
+    title = html_escape(lot.get("title") or lot.get("id") or "")
+    return (
+        f'<img class="thumb" src="{html_escape(src)}" alt="{title}" '
+        f'referrerpolicy="no-referrer">'
+    )
 
 
 def capture_page(lots: list[dict]) -> str:
@@ -553,7 +641,8 @@ def capture_page(lots: list[dict]) -> str:
         label = f"{count} photo" if count == 1 else f"{count} photos"
         rows.append(
             f"""<a class="shot-row" href="/lot/{html_escape(lot['id'])}">
-              <span><strong>{html_escape(lot.get('title') or lot['id'])}</strong><br>{html_escape(lot.get('price', ''))} · lot {html_escape(lot['id'])} · {label}</span>
+              {capture_thumb(lot)}
+              <span class="shot-copy"><strong>{html_escape(lot.get('title') or lot['id'])}</strong><br>{html_escape(lot.get('price', ''))} · lot {html_escape(lot['id'])} · {label}</span>
               <span>Add</span>
             </a>"""
         )
@@ -571,7 +660,11 @@ def capture_page(lots: list[dict]) -> str:
     .shot-row {{ display: flex; justify-content: space-between; gap: 12px; align-items: center;
       background: white; padding: 14px; border-radius: 10px; text-decoration: none; color: inherit;
       border-bottom: 4px solid #f57c00; }}
-    input {{ width: 100%; padding: 12px; font-size: 16px; border-radius: 8px; border: 1px solid #ccc; }}
+    .thumb {{ width: 72px; height: 72px; object-fit: contain; flex: 0 0 72px; background: #f4f4f4; border-radius: 8px; }}
+    .thumb.empty {{ display: flex; align-items: center; justify-content: center; text-align: center;
+      font-size: 0.75rem; font-weight: 700; color: #015b85; }}
+    .shot-copy {{ flex: 1; min-width: 0; }}
+    input {{ width: 100%; padding: 12px; font-size: 16px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }}
   </style>
 </head>
 <body>
@@ -661,13 +754,13 @@ def lot_capture_page(lot: dict) -> str:
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build the Parts $10+ pages from LotLedger.")
-    parser.add_argument("command", nargs="?", choices=("build", "photos", "usb"), default="build")
+    parser.add_argument("command", nargs="?", choices=("build", "photos", "usb", "clean"), default="build")
     parser.add_argument("--db", help="Path to lotledger.db. Defaults to the usual LotLedger data folder.")
     parser.add_argument("--min", type=float, default=MIN_DOLLARS, help="Minimum unit price in dollars (default 10).")
     parser.add_argument("--yes", action="store_true", help="Delete listings and photos for lots that dropped off the list.")
     parser.add_argument("--keep", action="store_true", help="Keep listings and photos for lots that dropped off the list.")
     parser.add_argument("--port", type=int, default=8787, help="Port for the phone photo page.")
-    parser.add_argument("--lot", help="BrickLink inventory id for a USB photo copy, such as 541734691.")
+    parser.add_argument("--lot", help="BrickLink inventory id, such as 541734691. Required for clean and optional for usb.")
     parser.add_argument("--newest", type=int, help="Copy this many newest phone photos without asking.")
     parser.add_argument("--pick", help="USB photo numbers to copy, such as 1,2.")
     return parser.parse_args(argv)
@@ -684,6 +777,14 @@ def main(argv: list[str] | None = None) -> None:
         from phone_usb import import_from_usb
 
         import_from_usb(args.lot, args.newest, args.pick)
+        return
+    if args.command == "clean":
+        if not args.lot:
+            raise SystemExit(
+                "Pass the lot id to clean, for example: "
+                "python3 scripts/build_highlights.py clean --lot 541734691"
+            )
+        clear_lot_photos(args.lot)
         return
     db_path = find_db(args.db)
     print(f"Reading {db_path}")

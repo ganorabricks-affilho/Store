@@ -173,6 +173,77 @@ class SyncTests(unittest.TestCase):
         self.assertIn("Built and displayed", page)
         self.assertNotIn("Closet", page)
 
+    def test_clear_lot_photos_removes_only_that_lots_pictures(self):
+        highlights.sync(self.db, 10000, False)
+        (self.photos / "99_1.jpg").write_bytes(b"orphan")
+        removed = highlights.clear_lot_photos("15")
+        self.assertEqual([path.name for path in removed], ["15_1.jpg", "15_2.PNG"])
+        self.assertFalse((self.photos / "15_1.jpg").exists())
+        self.assertFalse((self.photos / "15_2.PNG").exists())
+        self.assertTrue((self.photos / "20_1.jpg").is_file())
+        self.assertTrue((self.photos / "99_1.jpg").is_file())
+        self.assertTrue((highlights.PAGE_DIR / "15.html").is_file())
+        page = (highlights.PAGE_DIR / "15.html").read_text()
+        self.assertIn("No photos yet", page)
+        self.assertNotIn("15_1.jpg", page)
+        listing = (highlights.SITE / "part-highlights.html").read_text()
+        self.assertNotIn("15_1.jpg", listing)
+        self.assertIn("Black Brick 2 x 4", listing)
+        data = {item["id"]: item for item in highlights.load_previous(highlights.DATA_PATH)}
+        self.assertEqual(data["15"]["photos"], [])
+        self.assertEqual(data["20"]["photos"], ["assets/parts/highlights/20_1.jpg"])
+
+        orphan = highlights.clear_lot_photos("99")
+        self.assertEqual([path.name for path in orphan], ["99_1.jpg"])
+        self.assertFalse((self.photos / "99_1.jpg").exists())
+        with self.assertRaises(SystemExit):
+            highlights.clear_lot_photos("lot-15")
+
+    def test_wifi_photo_upload_updates_the_pages(self):
+        highlights.sync(self.db, 10000, False)
+        dest = highlights.save_lot_photo("15", b"new-photo", "shot.jpg")
+        self.assertEqual(dest.name, "15_3.jpg")
+        self.assertEqual(dest.read_bytes(), b"new-photo")
+        page = (highlights.PAGE_DIR / "15.html").read_text()
+        self.assertIn("../assets/parts/highlights/15_3.jpg", page)
+        listing = (highlights.SITE / "part-highlights.html").read_text()
+        self.assertIn("See photos (3)", listing)
+        data = {item["id"]: item for item in highlights.load_previous(highlights.DATA_PATH)}
+        self.assertIn("assets/parts/highlights/15_3.jpg", data["15"]["photos"])
+        self.assertEqual(data["20"]["photos"], ["assets/parts/highlights/20_1.jpg"])
+
+    def test_upload_list_shows_the_same_thumbnail_as_the_parts_page(self):
+        html = highlights.capture_page(
+            [
+                {
+                    "id": "15",
+                    "title": "Black Brick 2 x 4",
+                    "price": "$15.000",
+                    "image_url": "https://img.bricklink.com/ItemImage/PN/11/3001.png",
+                    "photos": [],
+                },
+                {
+                    "id": "20",
+                    "title": "White Tile",
+                    "price": "$20.000",
+                    "image_url": "",
+                    "photos": ["assets/parts/highlights/20_1.jpg"],
+                },
+                {
+                    "id": "9",
+                    "title": "Bad image",
+                    "price": "$9.000",
+                    "image_url": "javascript:alert(1)",
+                    "photos": [],
+                },
+            ]
+        )
+        self.assertIn('src="https://img.bricklink.com/ItemImage/PN/11/3001.png"', html)
+        self.assertIn('src="/file/20_1.jpg"', html)
+        self.assertIn('referrerpolicy="no-referrer"', html)
+        self.assertIn(">No photo<", html)
+        self.assertNotIn("javascript:", html)
+
 
 if __name__ == "__main__":
     unittest.main()

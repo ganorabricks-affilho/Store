@@ -197,21 +197,7 @@ def commit_photo(src: Path, lot_id: str, convert=convert_heic_with_sips) -> Path
 
 
 def refresh_photo_pages() -> None:
-    highlights = _highlights()
-    lots = highlights.load_previous(highlights.DATA_PATH)
-    if not lots:
-        print("Photo saved. Run the build once so the Parts $10+ page exists.")
-        return
-    highlights.attach_photos(lots, highlights.PHOTO_DIR)
-    min_milli = 10000
-    try:
-        import json
-
-        payload = json.loads(highlights.DATA_PATH.read_text())
-        min_milli = int(payload.get("min_milli") or min_milli)
-    except (OSError, ValueError, TypeError):
-        pass
-    highlights.write_site(lots, min_milli)
+    _highlights().refresh_photo_pages()
 
 
 def match_lot(query: str, lots: list[dict]) -> tuple[str | None, str]:
