@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-02T02:09:37Z",
+  "generated_at": "2026-11-02T02:13:11Z",
   "min_milli": 10000,
   "photo_dir": "docs/assets/parts/highlights",
   "items": [
@@ -36,14 +36,7 @@
       "image_url": "https://img.bricklink.com/ItemImage/PN/11/92760pb02.png",
       "bricklink_url": "https://store.bricklink.com/Ganorabricks?p=Ganorabricks&itemID=568605880#/shop",
       "brickowl_url": "https://ganorabricks.brickowl.com/",
-      "photos": [
-        "assets/parts/highlights/568605880_2.jpg",
-        "assets/parts/highlights/568605880_3.jpg",
-        "assets/parts/highlights/568605880_4.jpg",
-        "assets/parts/highlights/568605880_5.jpg",
-        "assets/parts/highlights/568605880_6.jpg",
-        "assets/parts/highlights/568605880_7.jpg"
-      ],
+      "photos": [],
       "photo_page": "highlights/568605880.html"
     },
     {
