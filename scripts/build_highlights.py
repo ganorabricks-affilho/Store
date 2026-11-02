@@ -236,6 +236,20 @@ LIST_START = "<!-- highlights:start -->"
 LIST_END = "<!-- highlights:end -->"
 
 
+def lot_meta(lot: dict) -> str:
+    lot_id = str(lot.get("id") or "").strip()
+    return " · ".join(
+        bit
+        for bit in (
+            f"lot {lot_id}" if lot_id else "",
+            lot.get("item_no"),
+            lot.get("condition"),
+            f"qty {lot.get('qty', 0)}",
+        )
+        if bit
+    )
+
+
 def list_thumb_src(lot: dict) -> str:
     """Prefer the catalog image stored in LotLedger. Local photos are the fallback."""
     url = (lot.get("image_url") or "").strip()
@@ -260,9 +274,7 @@ def render_lot_list(lots: list[dict]) -> str:
             photo_label = "See photos (1)"
         else:
             photo_label = f"See photos ({count})"
-        meta = " · ".join(
-            bit for bit in (lot.get("item_no"), lot.get("condition"), f"qty {lot.get('qty', 0)}") if bit
-        )
+        meta = lot_meta(lot)
         page = html_escape(lot["photo_page"])
         title = html_escape(lot["title"])
         thumb_src = list_thumb_src(lot)
@@ -329,8 +341,7 @@ def write_site(lots: list[dict], min_milli: int) -> None:
 
 def photo_page(lot: dict) -> str:
     title = html_escape(lot["title"])
-    bits = [bit for bit in (lot.get("item_no"), lot.get("condition"), f"qty {lot.get('qty', 0)}") if bit]
-    meta = html_escape(" · ".join(bits))
+    meta = html_escape(lot_meta(lot))
     images = "\n".join(
         f'        <img src="../{html_escape(src)}" alt="{title}">'
         for src in lot.get("photos") or []
@@ -542,7 +553,7 @@ def capture_page(lots: list[dict]) -> str:
         label = f"{count} photo" if count == 1 else f"{count} photos"
         rows.append(
             f"""<a class="shot-row" href="/lot/{html_escape(lot['id'])}">
-              <span><strong>{html_escape(lot.get('title') or lot['id'])}</strong><br>{html_escape(lot.get('price', ''))} · {label}</span>
+              <span><strong>{html_escape(lot.get('title') or lot['id'])}</strong><br>{html_escape(lot.get('price', ''))} · lot {html_escape(lot['id'])} · {label}</span>
               <span>Add</span>
             </a>"""
         )

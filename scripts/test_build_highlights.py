@@ -94,6 +94,8 @@ class SyncTests(unittest.TestCase):
         listing = (highlights.SITE / "part-highlights.html").read_text()
         self.assertIn('href="highlights/15.html"', listing)
         self.assertIn("See photos (2)", listing)
+        self.assertIn("lot 15 · 3001 · Used · qty 2", listing)
+        self.assertIn("lot 15 · 3001 · Used · qty 2", page)
         self.assertIn("Black Brick 2 x 4", listing)
         self.assertNotIn("Plate 1 x 1", listing)
         self.assertEqual(by_id["15"]["image_url"], "")
