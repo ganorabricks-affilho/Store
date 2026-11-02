@@ -323,8 +323,6 @@ def photo_page(lot: dict) -> str:
             <p>Photos for this lot will show up here after they are added.</p>
         </div>"""
     extra = ""
-    if lot.get("remarks"):
-        extra += f"<p>{html_escape(lot['remarks'])}</p>"
     if lot.get("description"):
         extra += f"<p>{html_escape(lot['description'])}</p>"
     return f"""<!DOCTYPE html>

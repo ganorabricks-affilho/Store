@@ -129,6 +129,22 @@ class SyncTests(unittest.TestCase):
         self.assertFalse((highlights.PAGE_DIR / "20.html").exists())
         self.assertTrue((self.photos / "15_1.jpg").is_file())
 
+    def test_detail_page_shows_the_description_and_not_the_remarks(self):
+        conn = sqlite3.connect(self.db)
+        conn.execute(
+            """
+            UPDATE store_inventory
+            SET remarks = 'Closet', description = 'Built and displayed'
+            WHERE bl_inventory_id = '15'
+            """
+        )
+        conn.commit()
+        conn.close()
+        highlights.sync(self.db, 10000, False)
+        page = (highlights.PAGE_DIR / "15.html").read_text()
+        self.assertIn("Built and displayed", page)
+        self.assertNotIn("Closet", page)
+
 
 if __name__ == "__main__":
     unittest.main()
