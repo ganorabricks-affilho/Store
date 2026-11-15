@@ -529,7 +529,6 @@ def photo_page(lot: dict) -> str:
     <p><a class="text-link" href="../part-highlights.html">Part photos</a></p>
     <h1 class="section-title">{title}</h1>
     <p>{meta}</p>
-    <p class="highlight-price">{html_escape(lot.get("price", ""))}</p>
     {extra}
     <div class="card-actions">
         <a class="btn-stud" href="{html_escape(lot['bricklink_url'])}" target="_blank" rel="noopener noreferrer">BrickLink</a>

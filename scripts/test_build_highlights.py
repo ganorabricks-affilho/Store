@@ -97,6 +97,8 @@ class SyncTests(unittest.TestCase):
         self.assertIn("3001 · Used · qty 2", listing)
         self.assertNotIn("lot 15", listing)
         self.assertIn("lot 15 · 3001 · Used · qty 2", page)
+        self.assertNotIn("highlight-price", page)
+        self.assertNotIn("$15.000", page)
         self.assertIn("Black Brick 2 x 4", listing)
         self.assertNotIn("highlight-price", listing)
         self.assertNotIn("$15.000", listing)
