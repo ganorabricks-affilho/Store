@@ -317,7 +317,7 @@ section {
 
 .highlight-row {
     display: grid;
-    grid-template-columns: 88px minmax(0, 1fr) auto auto;
+    grid-template-columns: 88px minmax(0, 1fr) auto;
     gap: 16px;
     align-items: center;
     background: white;
@@ -510,7 +510,6 @@ footer a {
         grid-template-columns: 72px minmax(0, 1fr);
     }
 
-    .highlight-row .highlight-price,
     .highlight-row .btn-stud {
         grid-column: 2;
     }

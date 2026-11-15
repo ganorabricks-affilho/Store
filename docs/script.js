@@ -30,7 +30,7 @@ function initHamburgerMenu() {
 
 function sitePrefix() {
     const path = window.location.pathname.replace(/\\/g, "/");
-    return path.includes("/highlights/") ? "../" : "";
+    return /\/(highlights|products)\//.test(path) ? "../" : "";
 }
 
 function loadSiteChrome() {
@@ -42,7 +42,10 @@ function loadSiteChrome() {
     if (navEl) {
         jobs.push(
             fetch(prefix + "navbar.html")
-                .then(res => res.text())
+                .then(res => {
+                    if (!res.ok) throw new Error("navbar " + res.status);
+                    return res.text();
+                })
                 .then(html => {
                     navEl.innerHTML = html;
                     initHamburgerMenu();
@@ -53,7 +56,10 @@ function loadSiteChrome() {
     if (footerEl) {
         jobs.push(
             fetch(prefix + "footer.html")
-                .then(res => res.text())
+                .then(res => {
+                    if (!res.ok) throw new Error("footer " + res.status);
+                    return res.text();
+                })
                 .then(html => {
                     footerEl.innerHTML = html;
                 })
@@ -136,10 +142,21 @@ function renderHighlights(containerId, items) {
         return;
     }
 
+    const visible = items.filter(item => item.photos && item.photos.length);
+    if (!visible.length) {
+        container.innerHTML = `
+            <div class="empty-gallery">
+                <p class="empty-title">Photos coming soon</p>
+                <p>When a part is worth a closer look, its photo will show up here. The full inventory stays on BrickLink and BrickOwl.</p>
+            </div>
+        `;
+        return;
+    }
+
     const grid = document.createElement("div");
     grid.className = "gallery-grid";
 
-    items.forEach(item => {
+    visible.forEach(item => {
         const card = document.createElement("article");
         card.className = "card highlight-card";
         const title = escapeHtml(item.title);
@@ -159,7 +176,6 @@ function renderHighlights(containerId, items) {
             <h3>${title}</h3>
             ${meta ? `<p class="card-copy">${escapeHtml(meta)}</p>` : ""}
             ${item.note ? `<p class="card-copy">${escapeHtml(item.note)}</p>` : ""}
-            ${item.price ? `<p class="highlight-price">${escapeHtml(item.price)}</p>` : ""}
             <div class="card-actions">${links}</div>
         `;
         grid.appendChild(card);

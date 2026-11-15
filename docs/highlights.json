@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-02T03:45:40Z",
+  "generated_at": "2026-11-15T03:36:37Z",
   "min_milli": 10000,
   "photo_dir": "docs/assets/parts/highlights",
   "items": [
@@ -1032,6 +1032,32 @@
       "brickowl_url": "https://ganorabricks.brickowl.com/",
       "photos": [],
       "photo_page": "highlights/563447499.html"
+    },
+    {
+      "id": "562270046",
+      "item_no": "970c00pb0635",
+      "name": "Hips and Legs with Armor with 3 Bright Light Orange Pouches and Reddish Brown Leggings Pattern",
+      "title": "Tan Hips and Legs with Armor with 3 Bright Light Orange Pouches and Reddish Brown Leggings Pattern",
+      "color": "Tan",
+      "condition": "Used",
+      "qty": 1,
+      "price_milli": 9510,
+      "price": "$9.510",
+      "description": "",
+      "remarks": "AK-13-02",
+      "image_url": "https://img.bricklink.com/ItemImage/PN/2/970c00pb0635.png",
+      "bricklink_url": "https://store.bricklink.com/Ganorabricks?p=Ganorabricks&itemID=562270046#/shop",
+      "brickowl_url": "https://ganorabricks.brickowl.com/",
+      "photos": [
+        "assets/parts/highlights/562270046_1.jpeg",
+        "assets/parts/highlights/562270046_2.jpeg",
+        "assets/parts/highlights/562270046_3.jpeg",
+        "assets/parts/highlights/562270046_4.jpeg",
+        "assets/parts/highlights/562270046_5.jpeg",
+        "assets/parts/highlights/562270046_6.jpeg"
+      ],
+      "photo_page": "highlights/562270046.html",
+      "pinned": true
     }
   ]
 }

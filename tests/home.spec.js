@@ -32,7 +32,7 @@ test.describe('Home Page', () => {
     
     await expect(legoPartsLink).toContainText('LEGO');
     await expect(printsLink).toContainText('3D Prints');
-    await expect(highlightsLink).toContainText('Parts $10+');
+    await expect(highlightsLink).toContainText('Part photos');
   });
 
   test('should have hero section with content', async ({ page }) => {

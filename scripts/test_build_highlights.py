@@ -94,12 +94,57 @@ class SyncTests(unittest.TestCase):
         listing = (highlights.SITE / "part-highlights.html").read_text()
         self.assertIn('href="highlights/15.html"', listing)
         self.assertIn("See photos (2)", listing)
-        self.assertIn("lot 15 · 3001 · Used · qty 2", listing)
+        self.assertIn("3001 · Used · qty 2", listing)
+        self.assertNotIn("lot 15", listing)
         self.assertIn("lot 15 · 3001 · Used · qty 2", page)
         self.assertIn("Black Brick 2 x 4", listing)
+        self.assertNotIn("highlight-price", listing)
+        self.assertNotIn("$15.000", listing)
         self.assertNotIn("Plate 1 x 1", listing)
         self.assertEqual(by_id["15"]["image_url"], "")
         self.assertIn('src="assets/parts/highlights/15_1.jpg"', listing)
+
+    def test_lots_without_photos_stay_off_the_public_list(self):
+        conn = sqlite3.connect(self.db)
+        conn.execute(
+            """
+            INSERT INTO store_inventory (
+                bl_inventory_id, item_no, item_name, color_name, new_or_used,
+                quantity, unit_price_milli
+            ) VALUES ('40', '3003', 'Brick 2 x 2', 'Green', 'N', 1, 12000)
+            """
+        )
+        conn.commit()
+        conn.close()
+        highlights.sync(self.db, 10000, False)
+        listing = (highlights.SITE / "part-highlights.html").read_text()
+        self.assertNotIn("Green Brick 2 x 2", listing)
+        self.assertNotIn("highlights/40.html", listing)
+        self.assertIn("Black Brick 2 x 4", listing)
+        data = {item["id"]: item for item in highlights.load_previous(highlights.DATA_PATH)}
+        self.assertIn("40", data)
+        self.assertEqual(data["40"]["photos"], [])
+        self.assertTrue((highlights.PAGE_DIR / "40.html").is_file())
+
+    def test_specific_lot_is_added_below_the_minimum_and_stays(self):
+        highlights.sync(self.db, 10000, False, "9")
+        data = {item["id"]: item for item in highlights.load_previous(highlights.DATA_PATH)}
+        self.assertEqual(data["9"]["price"], "$9.000")
+        self.assertTrue(data["9"]["pinned"])
+        listing = (highlights.SITE / "part-highlights.html").read_text()
+        self.assertIn("Red Plate 1 x 1", listing)
+        highlights.sync(self.db, 10000, False)
+        data = {item["id"]: item for item in highlights.load_previous(highlights.DATA_PATH)}
+        self.assertIn("9", data)
+        self.assertTrue(data["9"]["pinned"])
+        listing = (highlights.SITE / "part-highlights.html").read_text()
+        self.assertIn("Red Plate 1 x 1", listing)
+
+    def test_specific_lot_must_be_for_sale(self):
+        with self.assertRaises(SystemExit):
+            highlights.sync(self.db, 10000, False, "7")
+        with self.assertRaises(SystemExit):
+            highlights.sync(self.db, 10000, False, "999")
 
     def test_list_thumbnail_uses_the_database_image_url(self):
         conn = sqlite3.connect(self.db)
@@ -188,8 +233,9 @@ class SyncTests(unittest.TestCase):
         self.assertNotIn("15_1.jpg", page)
         listing = (highlights.SITE / "part-highlights.html").read_text()
         self.assertNotIn("15_1.jpg", listing)
-        self.assertIn("Black Brick 2 x 4", listing)
+        self.assertNotIn("Black Brick 2 x 4", listing)
         data = {item["id"]: item for item in highlights.load_previous(highlights.DATA_PATH)}
+        self.assertIn("15", data)
         self.assertEqual(data["15"]["photos"], [])
         self.assertEqual(data["20"]["photos"], ["assets/parts/highlights/20_1.jpg"])
 

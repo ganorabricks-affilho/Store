@@ -10,7 +10,7 @@ Visit [ganorabricks.com](https://ganorabricks.com)
 
 Ganorabricks offers:
 - **Thousands of authentic LEGO® parts and sets** on BrickLink and BrickOwl
-- **Photos of parts $10 and up** on this site, for a closer look
+- **Part photos** on this site, for a closer look
 - **3D-printed stands and organizers**, quoted by email
 - **Custom 3D print requests**
 
@@ -29,7 +29,7 @@ Store/
 │   ├── index.html          # Home page
 │   ├── lego-parts.html     # LEGO parts catalog
 │   ├── 3dprints.html       # 3D prints showcase
-│   ├── part-highlights.html # Photos of parts $10 and up
+│   ├── part-highlights.html # Part photos
 │   ├── navbar.html         # Reusable navigation
 │   ├── footer.html         # Reusable footer
 │   ├── style.css           # Global styles
@@ -88,7 +88,7 @@ Photos live in `docs/assets/parts/highlights`. Name them with the BrickLink inve
 12345678_2.jpg
 ```
 
-The number goes up for each extra photo. On the next build, an existing lot keeps its photos and gets a new price. A new lot is added. A lot that is no longer on the list is removed, along with its photos, only after you confirm.
+The number goes up for each extra photo. On the next build, an existing lot keeps its photos and gets a new price. A new lot is added. A lot that is no longer on the list is removed, along with its photos, only after you confirm. The public page shows a lot only after it has at least one photo. Lots with no photos stay in the data so you can add the first picture.
 
 The thumbnail on the parts list is the `image_url` already stored in LotLedger. Your own photos still open from See photos.
 
@@ -96,6 +96,12 @@ Run this in Terminal on your Mac, from the Store folder. The database is not on 
 
 ```bash
 python3 scripts/build_highlights.py --db "/Users/AIRTONLADEIRAFERREIRA/PROJECTS/LOTLEDGER/DATA/LOTLEDGER.DB"
+```
+
+To add one lot even when its price is under $10, pass its BrickLink lot id. Later builds keep that lot until it is no longer for sale.
+
+```bash
+python3 scripts/build_highlights.py --db "/Users/AIRTONLADEIRAFERREIRA/PROJECTS/LOTLEDGER/DATA/LOTLEDGER.DB" --lot 123456789
 ```
 
 To copy photos from a phone plugged into the Mac with a USB cable, unlock the phone and run:

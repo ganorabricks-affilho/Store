@@ -14,6 +14,7 @@ on the next build. Existing photos are left in place when a price changes.
 
     python3 scripts/build_highlights.py
     python3 scripts/build_highlights.py --db ~/Projects/Lotledger/data/lotledger.db
+    python3 scripts/build_highlights.py --lot 123456789
     python3 scripts/build_highlights.py usb
     python3 scripts/build_highlights.py photos
     python3 scripts/build_highlights.py clean --lot 541734691
@@ -24,6 +25,9 @@ the phone's Camera app, then press Enter in Terminal.
 `photos` serves a page on your Wi-Fi so a phone on the same network can take
 a picture and save it under the next number for that lot. Each saved photo
 is added to the Parts $10+ pages, the same way a USB copy is.
+
+`--lot` on a build adds that BrickLink lot even when its price is under $10.
+Later builds keep it until it is no longer for sale.
 
 `clean --lot` deletes every photo for that BrickLink lot id and takes those
 pictures off the Parts $10+ pages. The listing itself stays.
@@ -129,6 +133,79 @@ def load_lots(db_path: Path, min_milli: int) -> list[dict]:
     finally:
         conn.close()
     return [lot_record(row) for row in rows]
+
+
+def load_for_sale_lot(db_path: Path, lot_id: str) -> tuple[dict | None, str]:
+    """Return one for-sale lot with no price minimum, or a reason it cannot be added."""
+    uri = f"file:{db_path}?mode=ro"
+    try:
+        conn = sqlite3.connect(uri, uri=True)
+    except sqlite3.Error as exc:
+        raise SystemExit(f"Could not open {db_path}: {exc}") from exc
+    conn.row_factory = sqlite3.Row
+    try:
+        columns = {row[1] for row in conn.execute("PRAGMA table_info(store_inventory)")}
+        image_select = "image_url" if "image_url" in columns else "'' AS image_url"
+        row = conn.execute(
+            f"""
+            SELECT bl_inventory_id, item_no, item_name, color_name, new_or_used,
+                   quantity, unit_price_milli, description, remarks, {image_select},
+                   is_stock_room, is_retain
+            FROM store_inventory
+            WHERE bl_inventory_id = ?
+            """,
+            (lot_id,),
+        ).fetchone()
+    except sqlite3.Error as exc:
+        raise SystemExit(
+            "This database does not have the LotLedger store_inventory table "
+            f"({exc})."
+        ) from exc
+    finally:
+        conn.close()
+    if row is None:
+        return None, "not in the LotLedger inventory"
+    if int(row["is_stock_room"] or 0):
+        return None, "in the stock room"
+    if int(row["is_retain"] or 0):
+        return None, "marked retain, so it is not for sale"
+    if int(row["quantity"] or 0) <= 0:
+        return None, "out of stock"
+    return lot_record(row), ""
+
+
+def add_requested_lots(current: list[dict], previous: list[dict], db_path: Path, extra_lot: str | None) -> None:
+    """Keep lots that were added by id, and add one new lot even under the price minimum."""
+    wanted = {str(lot["id"]) for lot in previous if lot.get("pinned")}
+    explicit = None
+    if extra_lot:
+        explicit = str(extra_lot).strip()
+        if not re.fullmatch(r"\d+", explicit):
+            raise SystemExit("Pass a lot id made of digits, such as 541734691.")
+        wanted.add(explicit)
+    by_id = {lot["id"]: lot for lot in current}
+    for lot_id in sorted(wanted, key=lambda value: int(value)):
+        if lot_id in by_id:
+            by_id[lot_id]["pinned"] = True
+            if lot_id == explicit:
+                print(
+                    f"Lot {lot_id} is already on the list at {by_id[lot_id]['price']}. "
+                    "It stays if the price later drops under the minimum."
+                )
+            continue
+        lot, reason = load_for_sale_lot(db_path, lot_id)
+        if lot is None:
+            if lot_id == explicit:
+                raise SystemExit(f"Lot {lot_id} was not added. It is {reason}.")
+            continue
+        lot["pinned"] = True
+        current.append(lot)
+        by_id[lot_id] = lot
+        if lot_id == explicit:
+            print(
+                f"Added lot {lot_id} at {lot['price']}  {lot['title']}. "
+                "It stays on the page even under the minimum."
+            )
 
 
 def lot_record(row: sqlite3.Row) -> dict:
@@ -285,12 +362,12 @@ LIST_START = "<!-- highlights:start -->"
 LIST_END = "<!-- highlights:end -->"
 
 
-def lot_meta(lot: dict) -> str:
+def lot_meta(lot: dict, include_lot_id: bool = True) -> str:
     lot_id = str(lot.get("id") or "").strip()
     return " · ".join(
         bit
         for bit in (
-            f"lot {lot_id}" if lot_id else "",
+            f"lot {lot_id}" if include_lot_id and lot_id else "",
             lot.get("item_no"),
             lot.get("condition"),
             f"qty {lot.get('qty', 0)}",
@@ -308,14 +385,20 @@ def list_thumb_src(lot: dict) -> str:
     return photos[0] if photos else ""
 
 
+def lots_with_photos(lots: list[dict]) -> list[dict]:
+    """The public list shows a lot after it has a photo, or when it was added by id."""
+    return [lot for lot in lots if lot.get("photos") or lot.get("pinned")]
+
+
 def render_lot_list(lots: list[dict]) -> str:
-    if not lots:
+    visible = lots_with_photos(lots)
+    if not visible:
         return """<div class="empty-gallery">
             <p class="empty-title">Photos coming soon</p>
             <p>When a part is worth a closer look, its photo will show up here. The full inventory stays on BrickLink and BrickOwl.</p>
         </div>"""
     rows = []
-    for lot in lots:
+    for lot in visible:
         count = len(lot.get("photos") or [])
         if count == 0:
             photo_label = "See photos"
@@ -323,7 +406,7 @@ def render_lot_list(lots: list[dict]) -> str:
             photo_label = "See photos (1)"
         else:
             photo_label = f"See photos ({count})"
-        meta = lot_meta(lot)
+        meta = lot_meta(lot, include_lot_id=False)
         page = html_escape(lot["photo_page"])
         title = html_escape(lot["title"])
         thumb_src = list_thumb_src(lot)
@@ -346,7 +429,6 @@ def render_lot_list(lots: list[dict]) -> str:
                     <a href="{html_escape(lot['brickowl_url'])}" target="_blank" rel="noopener noreferrer">BrickOwl</a>
                 </p>
             </div>
-            <p class="highlight-price">{html_escape(lot.get('price', ''))}</p>
             <a class="btn-stud" href="{page}">{photo_label}</a>
         </li>"""
         )
@@ -444,7 +526,7 @@ def photo_page(lot: dict) -> str:
 <body>
 <div id="navbar"></div>
 <section class="page-intro">
-    <p><a class="text-link" href="../part-highlights.html">Parts $10+</a></p>
+    <p><a class="text-link" href="../part-highlights.html">Part photos</a></p>
     <h1 class="section-title">{title}</h1>
     <p>{meta}</p>
     <p class="highlight-price">{html_escape(lot.get("price", ""))}</p>
@@ -478,11 +560,12 @@ def html_escape(value) -> str:
     )
 
 
-def sync(db_path: Path, min_milli: int, assume_delete: bool | None) -> dict:
+def sync(db_path: Path, min_milli: int, assume_delete: bool | None, extra_lot: str | None = None) -> dict:
     current = load_lots(db_path, min_milli)
+    previous = load_previous(DATA_PATH)
+    add_requested_lots(current, previous, db_path, extra_lot)
     attach_photos(current, PHOTO_DIR)
     current_ids = {lot["id"] for lot in current}
-    previous = load_previous(DATA_PATH)
     removed = [lot for lot in previous if str(lot.get("id")) not in current_ids]
     # Photos whose lot is no longer listed and was not in the last page either.
     known = current_ids | {str(lot.get("id")) for lot in previous}
@@ -668,7 +751,7 @@ def capture_page(lots: list[dict]) -> str:
   </style>
 </head>
 <body>
-  <header><strong>Parts $10+</strong><p>Pick a lot, then take the photo. It is saved on this Mac.</p></header>
+  <header><strong>Part photos</strong><p>Pick a lot, then take the photo. It is saved on this Mac.</p></header>
   <main>
     <input id="filter" type="search" placeholder="Search name or lot id" autofocus>
     <div id="rows">{body}</div>
@@ -760,7 +843,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--yes", action="store_true", help="Delete listings and photos for lots that dropped off the list.")
     parser.add_argument("--keep", action="store_true", help="Keep listings and photos for lots that dropped off the list.")
     parser.add_argument("--port", type=int, default=8787, help="Port for the phone photo page.")
-    parser.add_argument("--lot", help="BrickLink inventory id, such as 541734691. Required for clean and optional for usb.")
+    parser.add_argument("--lot", help="BrickLink inventory id, such as 541734691. On a build, include this lot even under $10. Required for clean and optional for usb.")
     parser.add_argument("--newest", type=int, help="Copy this many newest phone photos without asking.")
     parser.add_argument("--pick", help="USB photo numbers to copy, such as 1,2.")
     return parser.parse_args(argv)
@@ -789,7 +872,7 @@ def main(argv: list[str] | None = None) -> None:
     db_path = find_db(args.db)
     print(f"Reading {db_path}")
     assume = True if args.yes else False if args.keep else None
-    sync(db_path, int(round(args.min * 1000)), assume)
+    sync(db_path, int(round(args.min * 1000)), assume, args.lot)
 
 
 if __name__ == "__main__":
