@@ -500,18 +500,41 @@ def write_site(lots: list[dict], min_milli: int) -> None:
                 page.unlink()
 
 
+def photo_gallery(lot: dict) -> str:
+    photos = lot.get("photos") or []
+    if not photos:
+        return """    <div class="empty-gallery">
+        <p class="empty-title">No photos yet</p>
+        <p>Photos for this lot will show up here after they are added.</p>
+    </div>"""
+    items = []
+    for index, src in enumerate(photos, start=1):
+        escaped = html_escape(src)
+        items.append(
+            f'        <li><button type="button" aria-label="Open photo {index}" '
+            f'data-full="../{escaped}"><img src="../{escaped}" alt=""></button></li>'
+        )
+    thumbs = "\n".join(items)
+    return f"""    <ul class="photo-thumbs">
+{thumbs}
+    </ul>
+    <div class="photo-lightbox" id="photoLightbox" hidden>
+        <div class="photo-lightbox-stage">
+            <div class="photo-lightbox-frame">
+                <img id="photoFull" alt="">
+            </div>
+        </div>
+        <div class="photo-lightbox-bar">
+            <button type="button" id="zoomOut">Zoom out</button>
+            <button type="button" id="zoomIn">Zoom in</button>
+        </div>
+    </div>"""
+
+
 def photo_page(lot: dict) -> str:
     title = html_escape(lot["title"])
     meta = html_escape(lot_meta(lot))
-    images = "\n".join(
-        f'        <img src="../{html_escape(src)}" alt="{title}">'
-        for src in lot.get("photos") or []
-    )
-    if not images:
-        images = """        <div class="empty-gallery">
-            <p class="empty-title">No photos yet</p>
-            <p>Photos for this lot will show up here after they are added.</p>
-        </div>"""
+    gallery = photo_gallery(lot)
     extra = ""
     if lot.get("description"):
         extra += f"<p>{html_escape(lot['description'])}</p>"
@@ -537,9 +560,7 @@ def photo_page(lot: dict) -> str:
 </section>
 <section>
     <h2 class="section-title">Photos</h2>
-    <div class="lot-photos">
-{images}
-    </div>
+{gallery}
 </section>
 <div id="footer"></div>
 <script src="../script.js"></script>

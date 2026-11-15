@@ -183,3 +183,91 @@ function renderHighlights(containerId, items) {
 
     container.appendChild(grid);
 }
+
+// ------------------------------
+// HIGHLIGHT PHOTO VIEWER
+// ------------------------------
+function initPhotoLightbox() {
+    const lightbox = document.getElementById("photoLightbox");
+    const photo = document.getElementById("photoFull");
+    const zoomIn = document.getElementById("zoomIn");
+    const zoomOut = document.getElementById("zoomOut");
+    if (!lightbox || !photo || !zoomIn || !zoomOut) return;
+
+    const minZoom = 1;
+    const maxZoom = 4;
+    let zoom = 1;
+    let opener = null;
+
+    function fittedScale() {
+        const naturalWidth = photo.naturalWidth || 1;
+        const naturalHeight = photo.naturalHeight || 1;
+        const maxWidth = Math.max(window.innerWidth - 32, 1);
+        const maxHeight = Math.max(window.innerHeight - 96, 1);
+        return Math.min(maxWidth / naturalWidth, maxHeight / naturalHeight, 1);
+    }
+
+    function applyZoom() {
+        const stage = lightbox.querySelector(".photo-lightbox-stage");
+        const scale = fittedScale() * zoom;
+        photo.style.width = Math.round(photo.naturalWidth * scale) + "px";
+        photo.style.height = Math.round(photo.naturalHeight * scale) + "px";
+        zoomOut.disabled = zoom <= minZoom;
+        zoomIn.disabled = zoom >= maxZoom;
+        requestAnimationFrame(() => {
+            stage.scrollLeft = Math.max(0, (stage.scrollWidth - stage.clientWidth) / 2);
+            stage.scrollTop = Math.max(0, (stage.scrollHeight - stage.clientHeight) / 2);
+        });
+    }
+
+    function openPhoto(src, alt, button) {
+        opener = button;
+        zoom = 1;
+        photo.alt = alt;
+        photo.src = src;
+        lightbox.hidden = false;
+        document.body.style.overflow = "hidden";
+        if (photo.complete && photo.naturalWidth) applyZoom();
+        else photo.addEventListener("load", applyZoom, { once: true });
+        zoomIn.focus();
+    }
+
+    function closePhoto() {
+        if (lightbox.hidden) return;
+        lightbox.hidden = true;
+        document.body.style.overflow = "";
+        photo.removeAttribute("src");
+        if (opener) opener.focus();
+    }
+
+    document.querySelectorAll(".photo-thumbs button").forEach(button => {
+        button.addEventListener("click", () => {
+            openPhoto(button.dataset.full, button.getAttribute("aria-label") || "", button);
+        });
+    });
+
+    zoomIn.addEventListener("click", () => {
+        zoom = Math.min(maxZoom, Math.round((zoom + 0.5) * 10) / 10);
+        applyZoom();
+    });
+
+    zoomOut.addEventListener("click", () => {
+        zoom = Math.max(minZoom, Math.round((zoom - 0.5) * 10) / 10);
+        applyZoom();
+    });
+
+    lightbox.addEventListener("click", event => {
+        if (event.target === photo || event.target.closest("button")) return;
+        closePhoto();
+    });
+
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape") closePhoto();
+    });
+
+    window.addEventListener("resize", () => {
+        if (!lightbox.hidden) applyZoom();
+    });
+}
+
+initPhotoLightbox();

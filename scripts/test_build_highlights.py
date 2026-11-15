@@ -91,6 +91,9 @@ class SyncTests(unittest.TestCase):
         page = (highlights.PAGE_DIR / "15.html").read_text()
         self.assertIn("../assets/parts/highlights/15_1.jpg", page)
         self.assertIn("../assets/parts/highlights/15_2.PNG", page)
+        self.assertIn('class="photo-thumbs"', page)
+        self.assertIn('aria-label="Open photo 1"', page)
+        self.assertIn('id="photoLightbox"', page)
         listing = (highlights.SITE / "part-highlights.html").read_text()
         self.assertIn('href="highlights/15.html"', listing)
         self.assertIn("See photos (2)", listing)
@@ -127,6 +130,9 @@ class SyncTests(unittest.TestCase):
         self.assertIn("40", data)
         self.assertEqual(data["40"]["photos"], [])
         self.assertTrue((highlights.PAGE_DIR / "40.html").is_file())
+        empty_page = (highlights.PAGE_DIR / "40.html").read_text()
+        self.assertIn("No photos yet", empty_page)
+        self.assertNotIn("photo-thumbs", empty_page)
 
     def test_specific_lot_is_added_below_the_minimum_and_stays(self):
         highlights.sync(self.db, 10000, False, "9")

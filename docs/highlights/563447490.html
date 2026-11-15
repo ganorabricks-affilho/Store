@@ -20,9 +20,20 @@
 </section>
 <section>
     <h2 class="section-title">Photos</h2>
-    <div class="lot-photos">
-        <img src="../assets/parts/highlights/563447490_1.jpeg" alt="White Cloth Flag 8 x 5 Wave with Royal Knights Lion Head on Red and White Background Pattern">
-        <img src="../assets/parts/highlights/563447490_2.jpeg" alt="White Cloth Flag 8 x 5 Wave with Royal Knights Lion Head on Red and White Background Pattern">
+    <ul class="photo-thumbs">
+        <li><button type="button" aria-label="Open photo 1" data-full="../assets/parts/highlights/563447490_1.jpeg"><img src="../assets/parts/highlights/563447490_1.jpeg" alt=""></button></li>
+        <li><button type="button" aria-label="Open photo 2" data-full="../assets/parts/highlights/563447490_2.jpeg"><img src="../assets/parts/highlights/563447490_2.jpeg" alt=""></button></li>
+    </ul>
+    <div class="photo-lightbox" id="photoLightbox" hidden>
+        <div class="photo-lightbox-stage">
+            <div class="photo-lightbox-frame">
+                <img id="photoFull" alt="">
+            </div>
+        </div>
+        <div class="photo-lightbox-bar">
+            <button type="button" id="zoomOut">Zoom out</button>
+            <button type="button" id="zoomIn">Zoom in</button>
+        </div>
     </div>
 </section>
 <div id="footer"></div>

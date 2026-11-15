@@ -20,12 +20,23 @@
 </section>
 <section>
     <h2 class="section-title">Photos</h2>
-    <div class="lot-photos">
-        <img src="../assets/parts/highlights/562270055_1.jpeg" alt="Black Minifigure, Headgear Ninjago Wrap with Jagged Shoulders with Green Face Mask Pattern">
-        <img src="../assets/parts/highlights/562270055_2.jpeg" alt="Black Minifigure, Headgear Ninjago Wrap with Jagged Shoulders with Green Face Mask Pattern">
-        <img src="../assets/parts/highlights/562270055_3.jpeg" alt="Black Minifigure, Headgear Ninjago Wrap with Jagged Shoulders with Green Face Mask Pattern">
-        <img src="../assets/parts/highlights/562270055_4.jpeg" alt="Black Minifigure, Headgear Ninjago Wrap with Jagged Shoulders with Green Face Mask Pattern">
-        <img src="../assets/parts/highlights/562270055_5.jpeg" alt="Black Minifigure, Headgear Ninjago Wrap with Jagged Shoulders with Green Face Mask Pattern">
+    <ul class="photo-thumbs">
+        <li><button type="button" aria-label="Open photo 1" data-full="../assets/parts/highlights/562270055_1.jpeg"><img src="../assets/parts/highlights/562270055_1.jpeg" alt=""></button></li>
+        <li><button type="button" aria-label="Open photo 2" data-full="../assets/parts/highlights/562270055_2.jpeg"><img src="../assets/parts/highlights/562270055_2.jpeg" alt=""></button></li>
+        <li><button type="button" aria-label="Open photo 3" data-full="../assets/parts/highlights/562270055_3.jpeg"><img src="../assets/parts/highlights/562270055_3.jpeg" alt=""></button></li>
+        <li><button type="button" aria-label="Open photo 4" data-full="../assets/parts/highlights/562270055_4.jpeg"><img src="../assets/parts/highlights/562270055_4.jpeg" alt=""></button></li>
+        <li><button type="button" aria-label="Open photo 5" data-full="../assets/parts/highlights/562270055_5.jpeg"><img src="../assets/parts/highlights/562270055_5.jpeg" alt=""></button></li>
+    </ul>
+    <div class="photo-lightbox" id="photoLightbox" hidden>
+        <div class="photo-lightbox-stage">
+            <div class="photo-lightbox-frame">
+                <img id="photoFull" alt="">
+            </div>
+        </div>
+        <div class="photo-lightbox-bar">
+            <button type="button" id="zoomOut">Zoom out</button>
+            <button type="button" id="zoomIn">Zoom in</button>
+        </div>
     </div>
 </section>
 <div id="footer"></div>
