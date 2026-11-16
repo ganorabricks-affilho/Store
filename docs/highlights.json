@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-15T03:46:12Z",
+  "generated_at": "2026-11-16T03:43:07Z",
   "min_milli": 10000,
   "photo_dir": "docs/assets/parts/highlights",
   "items": [
@@ -171,6 +171,30 @@
         "assets/parts/highlights/442177597_4.jpeg"
       ],
       "photo_page": "highlights/442177597.html"
+    },
+    {
+      "id": "570862695",
+      "item_no": "23983",
+      "name": "Minifigure Armor Shoulder Pad with Grille / Fluted Profile and Scabbard for 2 Katanas",
+      "title": "Dark Brown Minifigure Armor Shoulder Pad with Grille / Fluted Profile and Scabbard for 2 Katanas",
+      "color": "Dark Brown",
+      "condition": "Used",
+      "qty": 1,
+      "price_milli": 26990,
+      "price": "$26.990",
+      "description": "",
+      "remarks": "AG-06",
+      "image_url": "https://img.bricklink.com/ItemImage/PN/120/23983.png",
+      "bricklink_url": "https://store.bricklink.com/Ganorabricks?p=Ganorabricks&itemID=570862695#/shop",
+      "brickowl_url": "https://ganorabricks.brickowl.com/",
+      "photos": [
+        "assets/parts/highlights/570862695_1.jpeg",
+        "assets/parts/highlights/570862695_2.jpeg",
+        "assets/parts/highlights/570862695_3.jpeg",
+        "assets/parts/highlights/570862695_4.jpeg"
+      ],
+      "photo_page": "highlights/570862695.html",
+      "pinned": true
     },
     {
       "id": "562270054",
